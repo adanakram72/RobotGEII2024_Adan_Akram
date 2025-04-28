@@ -29,7 +29,7 @@
             <Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Width="100"  />
         </StackPanel>
 
-        <GroupBox Header="E-Leds" Grid.Row="2" Grid.Column="0" BorderBrush="SeaGreen" Background="White" Margin="10,40,15,55">
+        <!--<GroupBox Header="E-Leds" Grid.Row="2" Grid.Column="0" BorderBrush="SeaGreen" Background="White" Margin="10,40,15,55">
             <StackPanel Orientation="Vertical">
                 <CheckBox Name="LEDVerte" Content="LVer" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDVerte"/>
                 <CheckBox Name="LEDBleue" Content="LBle" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBleue"/>
@@ -37,7 +37,7 @@
                 <CheckBox Name="LEDOrange" Content="LOra" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDOrange"/>
                 <CheckBox Name="LEDRouge" Content="LRou" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDRouge"/>
             </StackPanel>
-        </GroupBox>
+        </GroupBox>-->
         <GroupBox Header="Moteur" Grid.Column="1" Grid.Row="2" BorderBrush="ForestGreen" Margin="76,63,76,78" >
             <StackPanel Height="115">
                 <StackPanel Orientation="Horizontal" Margin="5">

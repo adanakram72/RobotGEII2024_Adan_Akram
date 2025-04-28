@@ -87,12 +87,12 @@ namespace RobotInterface
                 byteList[i] = (byte)(2 * i);
             }
             byteList[byteList.Length - 1] = (byte)'\n';
-            serialPort1.Write(byteList, 0, byteList.Length);*/
-            //string messageStr = "Bonjour";
-            //byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
-            //int msgPayloadLength = msgPayload.Length;
-            //int msgFunction = 0x0080;
-            //UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
+            serialPort1.Write(byteList, 0, byteList.Length);
+            string messageStr = "Bonjour";
+            byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
+            int msgPayloadLength = msgPayload.Length;
+            int msgFunction = 0x0080;
+            UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);*/
         }
 
 
@@ -200,7 +200,7 @@ namespace RobotInterface
         bool ELBleue = false;
         bool ELBlanche = false;
 
-        private void LEDRouge(object sender, RoutedEventArgs e)
+        /*private void LEDRouge(object sender, RoutedEventArgs e)
         {
             ELRouge = !ELRouge;
             byte[] array = new byte [2];
@@ -243,7 +243,7 @@ namespace RobotInterface
             array[0] = 4;
             array[1] = Convert.ToByte(ELVerte);
             UartEncodeAndSendMessage(0x0020, 2, array);
-        }
+        }*/
 
         public enum StateRobot
         {
@@ -338,8 +338,8 @@ namespace RobotInterface
                     rtbReception.Text += "\nRobot␣State␣:␣" +
                     ((StateRobot)(msgPayload[0])).ToString() +
                     "␣-␣" + instant.ToString() + "␣ms";
-                    break;
-                */
+                    break;*/
+                
                 default:
                     break;
             }

@@ -64,7 +64,7 @@ int main(void) {
     InitQEI1();    
     InitQEI2();
     SetFreqTimer4(1000);
-
+    
     // BOUCLE PRINCIPALE
     while (1) {
         unsigned char payload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r'};
