@@ -3,17 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/Utilities.h</file>
             <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/main.c</file>
-            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/UART_Protocol.c</file>
             <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/IO.c</file>
-            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/ADC.c</file>
-            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/QEI.h</file>
             <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/Utilities.c</file>
             <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/UART.c</file>
+            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/ChipConfig.c</file>
             <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/timer.c</file>
-            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/robot.h</file>
-            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/main.h</file>
+            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/robot.c</file>
+            <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/UART.h</file>
             <file>file:/C:/Github/RobotGEII2024_Adan_Akram/embedded/robotGEII2024_adan_akram1.X/QEI.c</file>
         </group>
     </open-files>

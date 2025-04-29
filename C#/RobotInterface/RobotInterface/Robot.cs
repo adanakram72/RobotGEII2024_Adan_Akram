@@ -13,6 +13,7 @@ namespace RobotInterface
         public float distanceTelemetreDroit;
         public float distanceTelemetreCentre;
         public float distanceTelemetreGauche;
+        public float positionXOdo, positionYOdo, vitesseLinFOdo, vitesseAngFOdo, angleRadFOdo;
         public Robot()
         {
             

@@ -46,12 +46,12 @@ void InitIO() {
     /****************************************************************************************************/
     UnlockIO(); // On unlock les registres d'entrées/sorties, ainsi que les registres des PPS
 
-//    _U1RXR = 78; //Remappe la RP78 sur l?éentre Rx1
-//    _RP79R = 0b00001; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
+    _U1RXR = 78; //Remappe la RP78 sur l?éentre Rx1
+    _RP79R = 0b00001; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
 
-   _U1RXR = 18; //Remappe la RP78 sur l?éentre Rx1
-   _RP79R = 0b00011; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
-//    
+//    _U2RXR = 18; //Remappe la RP78 sur l?éentre Rx1
+//    _RP98R = 0b00011; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
+
     LockIO(); // On lock les registres d'entrées/sorties, ainsi que les registres des PPS
 }
 

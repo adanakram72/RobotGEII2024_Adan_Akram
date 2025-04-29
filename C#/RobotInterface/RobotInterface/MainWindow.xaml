@@ -4,31 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RobotInterface"
+        xmlns:oscillo="clr-namespace:WpfOscilloscopeControl;assembly=WpfOscilloscopeControl"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1000">
     <Grid >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.2*"/>
-            <ColumnDefinition Width="0.8*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="0.7*"/>
+            <ColumnDefinition Width="0.3*"/>
+            <ColumnDefinition Width="0.7*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1.5*" />
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="1.*"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Emission" Grid.Column="0" Grid.Row="0" BorderBrush="#FF123950" Grid.ColumnSpan="2" Margin="7,7">
+        <GroupBox Header="Emission" Grid.Column="0" Grid.Row="0" BorderBrush="#FF123950" Grid.ColumnSpan="1" Margin="7,7">
             <TextBox x:Name="textboxEmission" Background="#DEDFDE"  KeyUp="TextBoxEmission_KeyUp"  ></TextBox>
         </GroupBox>
         <GroupBox Header="Reception" Grid.Row="0" Grid.Column="2" BorderBrush="SlateGray" Margin="7,7">
             <TextBox x:Name="textboxReception" Background="#DEDFDE" AcceptsReturn="True" ></TextBox>
         </GroupBox>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center">
-            <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Width="100" Background="WhiteSmoke"/>
-            <Button x:Name="buttonTest" Content="Test" Margin="5" Click="ButtonTest_Click" Width="100" RenderTransformOrigin="0.508,0.571" Background="WhiteSmoke" />
-            <Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Width="100"  />
+        <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,62,0,0" Grid.Column="1">
+            <Button x:Name="buttonSend" Content="Envoyer" Margin="10" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Width="120" Height="40" Background="WhiteSmoke"/>
+            <Button x:Name="buttonTest" Content="Test" Margin="10" Click="ButtonTest_Click" Width="120" Background="WhiteSmoke" Height="40" />
+            <Button x:Name="buttonClear" Content="Effacer" Margin="10" Click="buttonClear_Click" Width="120" Height="40"  />
         </StackPanel>
 
+        <oscillo:WpfOscilloscope x:Name="oscilloSpeed" Grid.ColumnSpan="2" Grid.Row="2" />
         <!--<GroupBox Header="E-Leds" Grid.Row="2" Grid.Column="0" BorderBrush="SeaGreen" Background="White" Margin="10,40,15,55">
             <StackPanel Orientation="Vertical">
                 <CheckBox Name="LEDVerte" Content="LVer" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDVerte"/>
@@ -38,7 +40,7 @@
                 <CheckBox Name="LEDRouge" Content="LRou" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDRouge"/>
             </StackPanel>
         </GroupBox>-->
-        <GroupBox Header="Moteur" Grid.Column="1" Grid.Row="2" BorderBrush="ForestGreen" Margin="76,63,76,78" >
+        <GroupBox Header="Moteur" Grid.Column="3" Grid.Row="2" BorderBrush="ForestGreen" Margin="20,80,240,80" >
             <StackPanel Height="115">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <Label Content="MotGauche : " VerticalAlignment="Center" Margin="2"/>
@@ -51,7 +53,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Header="Télémètres IR" Grid.Row="2" Grid.Column="2" BorderBrush="SeaGreen" Margin="50,40,50,40" Background="White">
+        <GroupBox Header="Télémètres IR" Grid.Row="2" Grid.Column="2" BorderBrush="SeaGreen" Margin="190,80, 30,80" Background="White">
             <StackPanel Margin="0,0,-2,0">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="IRExGauche : " Margin="2" VerticalAlignment="Center" />
@@ -77,4 +79,3 @@
         </GroupBox>
     </Grid>
 </Window>
-    

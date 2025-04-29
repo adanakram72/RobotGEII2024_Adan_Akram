@@ -25,6 +25,25 @@ void InitUART(void) {
     U1STAbits.UTXEN = 1; // Enable UART Tx
 }
 
+//void InitUART2(void) {
+//    U2MODEbits.STSEL = 0; // 1-stop bit
+//    U2MODEbits.PDSEL = 0; // No Parity, 8-data bits
+//    U2MODEbits.ABAUD = 0; // Auto-Baud Disabled
+//    U2MODEbits.BRGH = 1; // Low Speed mode
+//    U2BRG = BRGVAL; // BAUD Rate Setting
+//
+//    U2STAbits.UTXISEL0 = 0; // Interrupt after one Tx character is transmitted
+//    U2STAbits.UTXISEL1 = 0;
+//    IFS1bits.U2TXIF = 0; // clear TX interrupt flag   
+//    IEC1bits.U2TXIE = 1; // Enable UART Tx interrupt
+//
+//    U2STAbits.URXISEL = 0; // Interrupt after one RX character is received;
+//    IFS1bits.U2RXIF = 0; // Enable clear RX interrupt flag
+//    IEC1bits.U2RXIE = 1; //  UART Rx interrupt
+//    
+//    U2MODEbits.UARTEN = 1; // Enable UART
+//    U2STAbits.UTXEN = 1; // Enable UART Tx
+//}
 /*void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void) {
     IFS0bits.U1RXIF = 0; // clear RX interrupt flag 
     if (U1STAbits.FERR == 1) {

@@ -10,6 +10,7 @@
 
 void InitUART(void);
 void SendMessageDirect(unsigned char* message, int length);
+void InitUART2(void);
 
 
 #endif	/* UART_H */

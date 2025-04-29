@@ -22,7 +22,7 @@ namespace RobotInterface
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ExtendedSerialPort("COM3", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ExtendedSerialPort("COM4", 115200, Parity.None, 8, StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
             timerAffichage = new DispatcherTimer();
@@ -33,15 +33,23 @@ namespace RobotInterface
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
+
             for (int i = 0; i < robot.byteListReceived.Count; i++)
             {
-                DecodeMessage(robot.byteListReceived.Dequeue());
+                if( i == 0 )
+                {
+                    textboxReception.Text = ("").ToString();
+                }
+                byte messageR = robot.byteListReceived.Dequeue();
+                DecodeMessage(messageR);
+                textboxReception.Text += messageR.ToString("X2");
             }
         }
 
         public void SerialPort1_DataReceived(object sender, DataReceivedArgs e)
 
         {
+           
             for (int i = 0; i < e.Data.Length; i++)
             {
                 robot.byteListReceived.Enqueue(e.Data[i]);
@@ -179,7 +187,6 @@ namespace RobotInterface
 
                     if (receivedChecksum == calculatedChecksum)
                     {
-
                         ProcessDecodeMessage(msgDecodedFunction, msgDecodedPayload);
                     }
                     else
@@ -308,6 +315,15 @@ namespace RobotInterface
                         ELRouge = Convert.ToBoolean(msgPayload[1]);
                     }
                     break;
+                case 0x0061:
+                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4);
+                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8);
+                    robot.angleRadFOdo = BitConverter.ToSingle(msgPayload, 12);
+                    robot.vitesseLinFOdo = BitConverter.ToSingle(msgPayload, 16);
+                    robot.vitesseAngFOdo = BitConverter.ToSingle(msgPayload, 20);
+                    break;
+
+
                 /*case 0x0030:
                     byte[] value = new byte[2];
                     Buffer.BlockCopy(msgPayload, 0, value, 0, 2);
