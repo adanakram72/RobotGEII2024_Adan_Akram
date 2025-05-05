@@ -7,75 +7,91 @@
         xmlns:oscillo="clr-namespace:WpfOscilloscopeControl;assembly=WpfOscilloscopeControl"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1000">
-    <Grid >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.7*"/>
-            <ColumnDefinition Width="0.3*"/>
-            <ColumnDefinition Width="0.7*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="0"/>
-            <RowDefinition Height="1.*"/>
-        </Grid.RowDefinitions>
-        <GroupBox Header="Emission" Grid.Column="0" Grid.Row="0" BorderBrush="#FF123950" Grid.ColumnSpan="1" Margin="7,7">
-            <TextBox x:Name="textboxEmission" Background="#DEDFDE"  KeyUp="TextBoxEmission_KeyUp"  ></TextBox>
-        </GroupBox>
-        <GroupBox Header="Reception" Grid.Row="0" Grid.Column="2" BorderBrush="SlateGray" Margin="7,7">
-            <TextBox x:Name="textboxReception" Background="#DEDFDE" AcceptsReturn="True" ></TextBox>
-        </GroupBox>
-        <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,62,0,0" Grid.Column="1">
-            <Button x:Name="buttonSend" Content="Envoyer" Margin="10" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Width="120" Height="40" Background="WhiteSmoke"/>
-            <Button x:Name="buttonTest" Content="Test" Margin="10" Click="ButtonTest_Click" Width="120" Background="WhiteSmoke" Height="40" />
-            <Button x:Name="buttonClear" Content="Effacer" Margin="10" Click="buttonClear_Click" Width="120" Height="40"  />
-        </StackPanel>
 
-        <oscillo:WpfOscilloscope x:Name="oscilloSpeed" Grid.ColumnSpan="2" Grid.Row="2" />
-        <!--<GroupBox Header="E-Leds" Grid.Row="2" Grid.Column="0" BorderBrush="SeaGreen" Background="White" Margin="10,40,15,55">
-            <StackPanel Orientation="Vertical">
-                <CheckBox Name="LEDVerte" Content="LVer" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDVerte"/>
-                <CheckBox Name="LEDBleue" Content="LBle" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBleue"/>
-                <CheckBox Name="LEDBlanche" Content="LBla" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBlanche"/>
-                <CheckBox Name="LEDOrange" Content="LOra" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDOrange"/>
-                <CheckBox Name="LEDRouge" Content="LRou" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDRouge"/>
-            </StackPanel>
-        </GroupBox>-->
-        <GroupBox Header="Moteur" Grid.Column="3" Grid.Row="2" BorderBrush="ForestGreen" Margin="20,80,240,80" >
-            <StackPanel Height="115">
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <Label Content="MotGauche : " VerticalAlignment="Center" Margin="2"/>
-                    <Label Name="ValMotGauche" Content="MotGauche" VerticalAlignment="Center" Margin="2"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <Label Content="MotDroit : " VerticalAlignment="Center" Margin="2"/>
-                    <Label Name="ValMotDroit" Content="MotDroit" VerticalAlignment="Center" Margin="2"/>
-                </StackPanel>
-            </StackPanel>
-        </GroupBox>
+    <TabControl x:Name="MainTabControl">
+        <!-- Onglet principal -->
+        <TabItem Header="Contrôle Robot">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150*"/>
+                    <ColumnDefinition Width="70*"/>
+                    <ColumnDefinition Width="150*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1.5*" />
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="1.*"/>
+                </Grid.RowDefinitions>
 
-        <GroupBox Header="Télémètres IR" Grid.Row="2" Grid.Column="2" BorderBrush="SeaGreen" Margin="190,80, 30,80" Background="White">
-            <StackPanel Margin="0,0,-2,0">
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IRExGauche : " Margin="2" VerticalAlignment="Center" />
-                    <Label Name="ValueIRExGauche" Content="ValueIRExG" Margin="2" VerticalAlignment="Center"/>
+                <GroupBox Header="Emission" Grid.Column="0" Grid.Row="0" BorderBrush="#FF123950" Margin="7,7,7,7" >
+                    <TextBox x:Name="textboxEmission" Background="#DEDFDE" KeyUp="TextBoxEmission_KeyUp"></TextBox>
+                </GroupBox>
+
+                <GroupBox Header="Reception" Grid.Row="0" Grid.Column="3" BorderBrush="SlateGray" Margin="7,7,7,7">
+                    <TextBox x:Name="textboxReception" Background="#DEDFDE" AcceptsReturn="True"></TextBox>
+                </GroupBox>
+
+                <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,100,0,0" Grid.Column="1">
+                    <Button x:Name="buttonSend" Content="Envoyer" Margin="10" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Width="120" Height="40" Background="WhiteSmoke"/>
+                    <Button x:Name="buttonTest" Content="Test" Margin="10" Click="ButtonTest_Click" Width="120" Background="WhiteSmoke" Height="40" />
+                    <Button x:Name="buttonClear" Content="Effacer" Margin="10" Click="buttonClear_Click" Width="120" Height="40"  />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IRGauche : " Margin="2" VerticalAlignment="Center" />
-                    <Label Name="ValueIRGauche" Content="ValueIRG" Margin="2" VerticalAlignment="Center"/>
+
+                <GroupBox Header="Moteur" Grid.Column="0" Grid.Row="2" BorderBrush="ForestGreen" Margin="80,40,80,40" >
+                    <StackPanel Height="115" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="MotGauche : " VerticalAlignment="Center" Margin="2"/>
+                            <Label Name="ValMotGauche" Content="MotGauche" VerticalAlignment="Center" Margin="2"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Label Content="MotDroit : " VerticalAlignment="Center" Margin="2"/>
+                            <Label Name="ValMotDroit" Content="MotDroit" VerticalAlignment="Center" Margin="2"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+            <!-- <GroupBox Header="E-Leds" Grid.Row="2" Grid.Column="1" BorderBrush="SeaGreen" Background="White" Margin="30,40,30,40">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <CheckBox Name="LEDVerte" Content="LVer" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDVerte"/>
+                    <CheckBox Name="LEDBleue" Content="LBle" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBleue"/>
+                    <CheckBox Name="LEDBlanche" Content="LBla" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBlanche"/>
+                    <CheckBox Name="LEDOrange" Content="LOra" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDOrange"/>
+                    <CheckBox Name="LEDRouge" Content="LRou" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDRouge"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IRCentre : " Margin="2" VerticalAlignment="Center" />
-                    <Label Name="ValueIRCentre" Content="ValueIRC" Margin="2" VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IRDroit : " Margin="2" VerticalAlignment="Center" />
-                    <Label Name="ValueIRDroit" Content="ValueIRD" Margin="2" VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="IRExDroit : " Margin="2" VerticalAlignment="Center" />
-                    <Label Name="ValueIRExDroit" Content="ValueIRExD" Margin="2" VerticalAlignment="Center"/>
-                </StackPanel>
-            </StackPanel>
-        </GroupBox>
-    </Grid>
+           </GroupBox>-->
+
+                <GroupBox Header="Télémètres IR" Grid.Row="2" Grid.Column="3" BorderBrush="SeaGreen" Margin="80,40,80,40" Background="White">
+                    <StackPanel Margin="0,0,-2,0" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="IRExGauche : " Margin="2" VerticalAlignment="Center"/>
+                            <Label Name="ValueIRExGauche" Content="ValueIRExG" Margin="2" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="IRGauche : " Margin="2" VerticalAlignment="Center"/>
+                            <Label Name="ValueIRGauche" Content="ValueIRG" Margin="2" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="IRCentre : " Margin="2" VerticalAlignment="Center"/>
+                            <Label Name="ValueIRCentre" Content="ValueIRC" Margin="2" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="IRDroit : " Margin="2" VerticalAlignment="Center"/>
+                            <Label Name="ValueIRDroit" Content="ValueIRD" Margin="2" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="IRExDroit : " Margin="2" VerticalAlignment="Center"/>
+                            <Label Name="ValueIRExDroit" Content="ValueIRExD" Margin="2" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </TabItem>
+
+        <!-- Onglet secondaire -->
+        <TabItem Header="Oscillo">
+            <Grid Background="White">
+                <oscillo:WpfOscilloscope x:Name="oscilloSpeed"  Loaded="oscilloSpeed_Loaded" Margin="10"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>

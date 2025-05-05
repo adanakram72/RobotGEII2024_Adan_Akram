@@ -207,7 +207,7 @@ namespace RobotInterface
         bool ELBleue = false;
         bool ELBlanche = false;
 
-        /*private void LEDRouge(object sender, RoutedEventArgs e)
+        private void LEDRouge(object sender, RoutedEventArgs e)
         {
             ELRouge = !ELRouge;
             byte[] array = new byte [2];
@@ -250,7 +250,7 @@ namespace RobotInterface
             array[0] = 4;
             array[1] = Convert.ToByte(ELVerte);
             UartEncodeAndSendMessage(0x0020, 2, array);
-        }*/
+        }
 
         public enum StateRobot
         {
@@ -393,6 +393,20 @@ namespace RobotInterface
         private void Mot_KeyUp(object sender, KeyEventArgs e)
         {
 
+        }
+
+        private void oscilloSpeed_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void buttonGoToTab2_Click(object sender, RoutedEventArgs e)
+        {
+            MainTabControl.SelectedIndex = 1;
+        }
+
+        private void buttonGoToTab1_Click(object sender, RoutedEventArgs e)
+        {
+            MainTabControl.SelectedIndex = 0;
         }
     }
 }
