@@ -9,6 +9,7 @@ using System.Windows.Threading;
 
 using ExtendedSerialPort_NS;
 using Robot_NS;
+using SciChart.Charting.Visuals;
 
 namespace WpfRobotInterface
 {
@@ -24,6 +25,8 @@ namespace WpfRobotInterface
         DispatcherTimer timerAffichage;
         public MainWindow()
         {
+            // Set this code once in App.xaml.cs or application startup
+            SciChartSurface.SetRuntimeLicenseKey("S2qB4UVLJdHvO3yV/v05tDmm7I3R9d7SjDf/G5oOCFVrydaWnUVVj/Pu6gT5lPw5Y7YdLT6DmsYJXuxfR641bajrGX8GBxpvfw893EURdOjPMU8CPyFUB+hfgMQwYCm9LgRd8m1MKwhKABfRbU0h7S8oNdvqSCHx3uV/20rwATE0k3RPv/lUnr+4098Cigp4ZXCc1WlKIVV14c8HelzCifEfHLLwv7u2eSBClOW7pI7kT7d8EfNdlDKXEa7zjGQq3ye8JMCm7g0YVSnNTDNwZIjx/FI3qB3iGPnAvTw870zisDjXNpA6aTDqtKEZqfKnDnqhs9g3frQyrV8c43N1+4Ce5sbsT4nn+zD7uZcra0F7hbkY6vNQ3HItBDRpZ7NGOCFQCVjsQ43Lj7A5GcsSqO+8bbTWbZABhfRt7K0BCtXmqG8V0yURDKn9405fPJF8vIGsxhqav1b+LtgUtvbek9eVsDAo61Sf8jCBRjDLd58xWKdU2LsC6SkDy2oOHCAFgrjJ8e1l");
             InitializeComponent();
             serialPort1 = new ExtendedSerialPort("COM4", 115200, Parity.None, 8, StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
@@ -36,23 +39,17 @@ namespace WpfRobotInterface
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
-
-            for (int i = 0; i < robot.byteListReceived.Count; i++)
+            oscilloSpeed.AddPointToLine(2, robot.angleRadFOdo, robot.vitesseAngFOdo);
+            oscilloSpeed.AddPointToLine(1, robot.angleRadFOdo, robot.vitesseLinFOdo);
+            while (robot.byteListReceived.Count>0)
             {
-                if (i == 0)
-                {
-                    textboxReception.Text = ("").ToString();
-                }
                 byte messageR = robot.byteListReceived.Dequeue();
                 DecodeMessage(messageR);
-                textboxReception.Text += messageR.ToString("X2");
             }
         }
 
         public void SerialPort1_DataReceived(object sender, DataReceivedArgs e)
-
         {
-
             for (int i = 0; i < e.Data.Length; i++)
             {
                 robot.byteListReceived.Enqueue(e.Data[i]);
@@ -323,24 +320,36 @@ namespace WpfRobotInterface
                     robot.angleRadFOdo = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLinFOdo = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngFOdo = BitConverter.ToSingle(msgPayload, 20);
+
+                    ValXPos.Content = robot.positionXOdo.ToString("F2");
+                    ValYPos.Content = robot.positionYOdo.ToString("F2");
+                    ValAngle.Content = robot.angleRadFOdo.ToString("F2");
+                    ValVitLin.Content = robot.vitesseLinFOdo.ToString("F2");
+                    ValVitAng.Content = robot.vitesseAngFOdo.ToString("F2");
+
                     break;
 
 
-                /*case 0x0030:
+                case 0x0030:
                     byte[] value = new byte[2];
+
                     Buffer.BlockCopy(msgPayload, 0, value, 0, 2);
                     ValueIRExGauche.Content = BitConverter.ToInt16(value, 0);
+
                     Buffer.BlockCopy(msgPayload, 2, value, 0, 2);
                     ValueIRGauche.Content = BitConverter.ToInt16(value, 0);
+
                     Buffer.BlockCopy(msgPayload, 4, value, 0, 2);
                     ValueIRCentre.Content = BitConverter.ToInt16(value, 0);
+
                     Buffer.BlockCopy(msgPayload, 6, value, 0, 2);
                     ValueIRDroit.Content = BitConverter.ToInt16(value, 0);
+
                     Buffer.BlockCopy(msgPayload, 8, value, 0, 2);
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
                     break;
 
-                case 0x0040:
+                /*case 0x0040:
 
                     break;
 
@@ -400,15 +409,6 @@ namespace WpfRobotInterface
         private void oscilloSpeed_Loaded(object sender, RoutedEventArgs e)
         {
 
-        }
-        private void buttonGoToTab2_Click(object sender, RoutedEventArgs e)
-        {
-            MainTabControl.SelectedIndex = 1;
-        }
-
-        private void buttonGoToTab1_Click(object sender, RoutedEventArgs e)
-        {
-            MainTabControl.SelectedIndex = 0;
         }
     }
 }

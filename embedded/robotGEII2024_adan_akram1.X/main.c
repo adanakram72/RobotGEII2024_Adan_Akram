@@ -20,6 +20,7 @@
 #include "CB_TX1.h"
 #include "CB_RX1.h"
 #include "UART_protocol.h"
+#include "QEI.h"
 #include <libpic30.h>
 
 unsigned char stateRobot;
@@ -67,9 +68,9 @@ int main(void) {
     
     // BOUCLE PRINCIPALE
     while (1) {
-//        unsigned char payload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r'};
-//        UartEncodeAndSendMessage(0x0080, sizeof(payload), payload);
-//        __delay32(40000000);
+        unsigned char payload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r'};
+        UartEncodeAndSendMessage(0x0080, sizeof(payload), payload);
+        __delay32(4000000);
     }
 
     return 0;

@@ -12,6 +12,7 @@
     <ProjectReference Include="..\..\..\..\..\Users\E306_PC2\Documents\WpfOscilloscope\WpfOscilloscopeControl.csproj" />
     <ProjectReference Include="..\..\ExtendedSerialPort .NET6\ExtendedSerialPort\ExtendedSerialPort\ExtendedSerialPort.csproj" />
     <ProjectReference Include="..\Robot\Robot.csproj" />
+    <ProjectReference Include="..\WpfAsservissementDisplay\WpfAsservissementDisplay.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using Constants;
-using System;
+﻿using System;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -504,5 +503,19 @@ namespace WpfAsservissementDisplay
             this.corrLimitIM8 = corrLimitI;
             this.corrLimitDM8 = corrLimitD;
         }
+    }
+
+    public enum AsservissementMode
+    {
+        DisabledM6,
+        DisabledM7, DisabledM8,
+        DisabledM9,
+        DisabledM5, 
+        EnabledM5, EnabledM6, EnabledM7,
+        EnabledM8,
+        EnabledM9,
+        Off2Wheels, Off4Wheels,
+        Polar2Wheels, Polar4Wheels,
+        Independant2Wheels, Independant4Wheels
     }
 }
