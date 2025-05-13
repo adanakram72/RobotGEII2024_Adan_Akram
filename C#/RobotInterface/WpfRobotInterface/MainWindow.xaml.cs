@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using ExtendedSerialPort_NS;
 using Robot_NS;
 using SciChart.Charting.Visuals;
+using WpfOscilloscopeControl;
 
 namespace WpfRobotInterface
 {
@@ -28,19 +29,31 @@ namespace WpfRobotInterface
             // Set this code once in App.xaml.cs or application startup
             SciChartSurface.SetRuntimeLicenseKey("S2qB4UVLJdHvO3yV/v05tDmm7I3R9d7SjDf/G5oOCFVrydaWnUVVj/Pu6gT5lPw5Y7YdLT6DmsYJXuxfR641bajrGX8GBxpvfw893EURdOjPMU8CPyFUB+hfgMQwYCm9LgRd8m1MKwhKABfRbU0h7S8oNdvqSCHx3uV/20rwATE0k3RPv/lUnr+4098Cigp4ZXCc1WlKIVV14c8HelzCifEfHLLwv7u2eSBClOW7pI7kT7d8EfNdlDKXEa7zjGQq3ye8JMCm7g0YVSnNTDNwZIjx/FI3qB3iGPnAvTw870zisDjXNpA6aTDqtKEZqfKnDnqhs9g3frQyrV8c43N1+4Ce5sbsT4nn+zD7uZcra0F7hbkY6vNQ3HItBDRpZ7NGOCFQCVjsQ43Lj7A5GcsSqO+8bbTWbZABhfRt7K0BCtXmqG8V0yURDKn9405fPJF8vIGsxhqav1b+LtgUtvbek9eVsDAo61Sf8jCBRjDLd58xWKdU2LsC6SkDy2oOHCAFgrjJ8e1l");
             InitializeComponent();
+
+            // Setting serialPort
             serialPort1 = new ExtendedSerialPort("COM4", 115200, Parity.None, 8, StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
+            
+            // Setting timer
             timerAffichage = new DispatcherTimer();
             timerAffichage.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            timerAffichage.Tick += TimerAffichage_Tick; ;
+            timerAffichage.Tick += TimerAffichage_Tick; 
             timerAffichage.Start();
+
+            // Setting oscillo 
+    
+            oscilloSpeed.isDisplayActivated = true;
+            oscilloSpeed.AddOrUpdateLine(1, 200, "Vitesse Lineaire");
+            oscilloSpeed.ChangeLineColor(1, Colors.Blue);
+            oscilloSpeed.AddOrUpdateLine(2, 200, "Vitesse Angulaire");
+            oscilloSpeed.ChangeLineColor(2, Colors.Green);
         }
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
-            oscilloSpeed.AddPointToLine(2, robot.angleRadFOdo, robot.vitesseAngFOdo);
-            oscilloSpeed.AddPointToLine(1, robot.angleRadFOdo, robot.vitesseLinFOdo);
+            oscilloSpeed.AddPointToLine(1, robot.timeFrom, robot.vitesseAngFOdo);
+            oscilloSpeed.AddPointToLine(2, robot.timeFrom, robot.vitesseLinFOdo);
             while (robot.byteListReceived.Count>0)
             {
                 byte messageR = robot.byteListReceived.Dequeue();
@@ -320,6 +333,7 @@ namespace WpfRobotInterface
                     robot.angleRadFOdo = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLinFOdo = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngFOdo = BitConverter.ToSingle(msgPayload, 20);
+                    robot.timeFrom = BitConverter.ToSingle(msgPayload, 24)/1000;
 
                     ValXPos.Content = robot.positionXOdo.ToString("F2");
                     ValYPos.Content = robot.positionYOdo.ToString("F2");

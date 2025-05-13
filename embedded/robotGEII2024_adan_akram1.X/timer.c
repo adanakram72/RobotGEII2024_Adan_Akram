@@ -5,7 +5,7 @@
 #include "ADC.h"
 #include "main.h"
 #include "QEI.h"
-
+#include "robot.h"
 //Initialisation d?un timer 16 bits
 unsigned long timestamp;
 unsigned long tstop = 0;
@@ -21,17 +21,17 @@ void InitTimer1(void) {
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     static unsigned int send_counter = 0;
-    
+
     IFS0bits.T1IF = 0;
     ADC1StartConversionSequence();
     PWMUpdateSpeed();
     QEIUpdateData();
-    
+    robotState.timeFrom++;
     send_counter++;
-    
+
     if (send_counter >= 25) {
         send_counter = 0;
-        //SendPositionData();
+        SendPositionData();
     }
 }
 

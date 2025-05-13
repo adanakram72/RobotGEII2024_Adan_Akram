@@ -9,10 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Users\E306_PC2\Documents\WpfOscilloscope\WpfOscilloscopeControl.csproj" />
-    <ProjectReference Include="..\..\ExtendedSerialPort .NET6\ExtendedSerialPort\ExtendedSerialPort\ExtendedSerialPort.csproj" />
+    <PackageReference Include="SciChart" Version="8.5.0.28148" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExtendedSerialPort\ExtendedSerialPort.csproj" />
     <ProjectReference Include="..\Robot\Robot.csproj" />
     <ProjectReference Include="..\WpfAsservissementDisplay\WpfAsservissementDisplay.csproj" />
+    <ProjectReference Include="..\WpfOscilloscope\WpfOscilloscopeControl.csproj" />
+	
   </ItemGroup>
 
 </Project>
