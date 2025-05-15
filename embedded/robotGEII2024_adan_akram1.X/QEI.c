@@ -63,8 +63,8 @@ void QEIUpdateData() {
     robotState.angleRadianFromOdometry_1 = robotState.angleRadianFromOdometry;
 
     //Calcul des positions dans le referentiel du terrain
-    robotState.xPosFromOdometry = (robotState.vitesseLineaireFromOdometry * cos(robotState.angleRadianFromOdometry)) / FREQ_ECH_QEI;
-    robotState.yPosFromOdometry = (robotState.vitesseLineaireFromOdometry * sin(robotState.angleRadianFromOdometry)) / FREQ_ECH_QEI;
+    robotState.xPosFromOdometry = (robotState.vitesseLineaireFromOdometry * cos(robotState.angleRadianFromOdometry)) / (FREQ_ECH_QEI);
+    robotState.yPosFromOdometry = (robotState.vitesseLineaireFromOdometry * sin(robotState.angleRadianFromOdometry)) / (FREQ_ECH_QEI);
     robotState.angleRadianFromOdometry = robotState.vitesseAngulaireFromOdometry / FREQ_ECH_QEI;
     if (robotState.angleRadianFromOdometry > PI)
         robotState.angleRadianFromOdometry -= 2 * PI;
@@ -75,7 +75,7 @@ void QEIUpdateData() {
 #define POSITION_DATA 0x0061
 
 void SendPositionData() {
-    unsigned char positionPayload[28];
+    unsigned char positionPayload[36];
     getBytesFromInt32(positionPayload, 0, timestamp);
     getBytesFromFloat(positionPayload, 4, (float) (robotState.xPosFromOdometry));
     getBytesFromFloat(positionPayload, 8, (float) (robotState.yPosFromOdometry));
@@ -83,5 +83,7 @@ void SendPositionData() {
     getBytesFromFloat(positionPayload, 16, (float) (robotState.vitesseLineaireFromOdometry));
     getBytesFromFloat(positionPayload, 20, (float) (robotState.vitesseAngulaireFromOdometry));
     getBytesFromFloat(positionPayload, 24, (float) (robotState.timeFrom));
-    UartEncodeAndSendMessage(POSITION_DATA, 28, positionPayload);
+    getBytesFromFloat(positionPayload, 28, (float) (robotState.vitesseDroitFromOdometry));
+    getBytesFromFloat(positionPayload, 32, (float) (robotState.vitesseGaucheFromOdometry));
+    UartEncodeAndSendMessage(POSITION_DATA, 36, positionPayload);
 }

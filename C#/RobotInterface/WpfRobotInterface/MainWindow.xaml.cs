@@ -52,6 +52,8 @@ namespace WpfRobotInterface
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
+            asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.positionMD, robot.positionMG);
+            asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
             oscilloSpeed.AddPointToLine(1, robot.timeFrom, robot.vitesseAngFOdo);
             oscilloSpeed.AddPointToLine(2, robot.timeFrom, robot.vitesseLinFOdo);
             while (robot.byteListReceived.Count>0)
@@ -67,6 +69,7 @@ namespace WpfRobotInterface
             {
                 robot.byteListReceived.Enqueue(e.Data[i]);
             }
+
         }
 
 
@@ -328,18 +331,25 @@ namespace WpfRobotInterface
                     }
                     break;
                 case 0x0061:
-                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4);
-                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8);
+                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4)*100;
+                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8)*10000;
                     robot.angleRadFOdo = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLinFOdo = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngFOdo = BitConverter.ToSingle(msgPayload, 20);
                     robot.timeFrom = BitConverter.ToSingle(msgPayload, 24)/1000;
+                    robot.positionMD = BitConverter.ToSingle(msgPayload, 28);
+                    robot.positionMG = BitConverter.ToSingle(msgPayload, 32);
 
                     ValXPos.Content = robot.positionXOdo.ToString("F2");
                     ValYPos.Content = robot.positionYOdo.ToString("F2");
                     ValAngle.Content = robot.angleRadFOdo.ToString("F2");
                     ValVitLin.Content = robot.vitesseLinFOdo.ToString("F2");
                     ValVitAng.Content = robot.vitesseAngFOdo.ToString("F2");
+                    VMotDroit.Content = robot.positionMD.ToString("F2");
+                    MotGauche.Content = robot.positionMG.ToString("F2");
+
+
+
 
                     break;
 

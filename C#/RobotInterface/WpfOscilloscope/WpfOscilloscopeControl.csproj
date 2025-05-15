@@ -102,6 +102,9 @@
     <PackageReference Include="SciChart">
       <Version>6.6.0.26505</Version>
     </PackageReference>
+    <PackageReference Include="SharpZipLib">
+      <Version>1.4.2</Version>
+    </PackageReference>
     <PackageReference Include="System.Collections">
       <Version>4.3.0</Version>
     </PackageReference>

@@ -46,18 +46,18 @@
             <Border Grid.Row="6" Grid.ColumnSpan="8"/>
             <Border Grid.Row="7" Grid.ColumnSpan="8"/>
 
-        <Label x:Name="LabelTitre" Content="Asserv en ..." Foreground="White" Margin="6,0,0,0" Padding="0" ></Label>
-        <Label Grid.Row="1" Content="Consigne : " Foreground="White"  Margin="6,0,0,0" Padding="0"></Label>
-        <Label Grid.Row="2" Content="Measure : " Foreground="White"  Margin="6,0,0,0" Padding="0"></Label>
-        <Label Grid.Row="3" Content="Error : " Foreground="White"  Margin="6,0,0,0" Padding="0"></Label>
-        <Label Grid.Row="4" Content="Command : " Foreground="White"  Margin="6,0,0,0" Padding="0"></Label>
-            <Label Grid.Column="1" Content="X" Foreground="White" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
-            <Label Grid.Column="2" Content="Y" Foreground="White" HorizontalAlignment="Center"  Margin="0" Padding="0"></Label>
-            <Label Grid.Column="3" Content="Theta" Foreground="White" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
-            <Label Grid.Column="4" Content="M1" Foreground="White" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
-            <Label Grid.Column="5" Content="M2" Foreground="White" HorizontalAlignment="Center"  Margin="0" Padding="0"></Label>
-            <Label Grid.Column="6" Content="M3" Foreground="White" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
-            <Label Grid.Column="7" Content="M4" Foreground="White" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
+        <Label x:Name="LabelTitre" Content="Asserv en ..." Margin="6,0,0,0" Padding="0" ></Label>
+        <Label Grid.Row="1" Content="Consigne : " Margin="6,0,0,0" Padding="0"></Label>
+        <Label Grid.Row="2" Content="Measure : "  Margin="6,0,0,0" Padding="0"></Label>
+        <Label Grid.Row="3" Content="Error : " Margin="6,0,0,0" Padding="0"></Label>
+        <Label Grid.Row="4" Content="Command : "  Margin="6,0,0,0" Padding="0"></Label>
+            <Label Grid.Column="1" Content="X" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
+            <Label Grid.Column="2" Content="Y" HorizontalAlignment="Center"  Margin="0" Padding="0"></Label>
+            <Label Grid.Column="3" Content="Theta" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
+            <Label Grid.Column="4" Content="M1" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
+            <Label Grid.Column="5" Content="M2" HorizontalAlignment="Center"  Margin="0" Padding="0"></Label>
+            <Label Grid.Column="6" Content="M3" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
+            <Label Grid.Column="7" Content="M4" HorizontalAlignment="Center" Margin="0" Padding="0" ></Label>
 
             <Label x:Name="LabelConsigneX" Content="0" Grid.Column="1" Grid.Row="1" Foreground="White" Margin="0" Padding="0"/>
             <Label x:Name="LabelConsigneY" Content="0" Grid.Column="2" Grid.Row="1"  Foreground="White" Margin="0" Padding="0"/>

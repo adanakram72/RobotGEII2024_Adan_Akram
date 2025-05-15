@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="SciChart" Version="8.5.0.28148" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
   <ItemGroup>
