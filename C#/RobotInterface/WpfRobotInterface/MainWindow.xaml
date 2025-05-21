@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfRobotInterface"  
         xmlns:oscillo="clr-namespace:WpfOscilloscopeControl;assembly=WpfOscilloscopeControl"
-
-        xmlns:AsservDisplay="clr-namespace:WpfAsservissementDisplay;assembly=WpfAsservissementDisplay"
+        xmlns:AsservDisplay="clr-namespace:WpfAsservissementDisplay;assembly=WpfAsservissementDisplay" 
+        xmlns:map="clr-namespace:WpfWorldMap_NS;assembly=WpfWorldMap"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1000">
 
@@ -18,133 +18,97 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <TabControl x:Name="MainTabControl">
-        <!-- Onglet principal -->
-        <TabItem Header="Contrôle Robot">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="42*"/>
-                    <ColumnDefinition Width="107*"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="149*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="0"/>
-                    <RowDefinition Height="1.*"/>
-                </Grid.RowDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
 
-                <StackPanel Grid.ColumnSpan="2">
-                    <GroupBox Header="Emission" Grid.Column="0" Grid.Row="0" BorderBrush="#FF123950" Margin="7,7,7,7" Grid.ColumnSpan="2" >
-                        <TextBox x:Name="textboxEmission" KeyUp="TextBoxEmission_KeyUp" Height="100"></TextBox>
-                    </GroupBox>
-                    <GroupBox Header="Reception" BorderBrush="SlateGray" Margin="7,7,7,7">
-                        <TextBox x:Name="textboxReception" AcceptsReturn="True" Height="100"></TextBox>
-                    </GroupBox>
+        <StackPanel Grid.ColumnSpan="1" VerticalAlignment="Center">
+            <GroupBox Header="Emission" BorderBrush="#FF123950" Margin="7,7,7,7">
+                <TextBox x:Name="textboxEmission" KeyUp="TextBoxEmission_KeyUp" Height="100" TextChanged="textboxEmission_TextChanged"></TextBox>
+            </GroupBox>
+            <GroupBox Header="Reception" BorderBrush="SlateGray" Margin="7,7,7,7">
+                <TextBox x:Name="textboxReception" AcceptsReturn="True" Height="100"></TextBox>
+            </GroupBox>
+        </StackPanel>
 
+        <oscillo:WpfOscilloscope x:Name="oscilloSpeed" Grid.Row="0" Grid.Column="2" Loaded="oscilloSpeed_Loaded" Margin="10,10,10,10"/>
+
+        <map:WpfWorldMap x:Name="worldMap" Grid.Row="0" Grid.Column="3"/>
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Width="80">
+            <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Height="40" Background="WhiteSmoke"/>
+            <Button x:Name="buttonTest" Content="Test" Margin="5" Click="ButtonTest_Click" Background="WhiteSmoke" Height="40" />
+            <Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Height="40"  />
+        </StackPanel>
+
+        <GroupBox Header="Moteur" Grid.Column="0" Grid.Row="1" BorderBrush="ForestGreen" Width="160">
+            <StackPanel VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="MotGauche :" VerticalAlignment="Center"/>
+                    <Label Name="MotGauche" Content="0" VerticalAlignment="Center"/>
                 </StackPanel>
-
-
-                <oscillo:WpfOscilloscope x:Name="oscilloSpeed" Grid.Row="0" Grid.Column="3" Loaded="oscilloSpeed_Loaded" Margin="10,10,10,10"/>
-
-
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Width="80">
-                    <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Height="40" Background="WhiteSmoke"/>
-                    <Button x:Name="buttonTest" Content="Test" Margin="5" Click="ButtonTest_Click" Background="WhiteSmoke" Height="40" />
-                    <Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Height="40"  />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="MotDroit :" VerticalAlignment="Center"/>
+                    <Label Name="VMotDroit" Content="0" VerticalAlignment="Center"/>
                 </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Grid.ColumnSpan="4" Margin="0,328,0,0" Grid.RowSpan="3">
-                    <GroupBox Header="Moteur" Grid.Column="0" Grid.Row="2" BorderBrush="ForestGreen" Width="160">
-                        <StackPanel VerticalAlignment="Top">
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="MotGauche :" VerticalAlignment="Center"/>
-                                <Label Name="MotGauche" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="MotDroit :" VerticalAlignment="Center"/>
-                                <Label Name="VMotDroit" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="XPos :" VerticalAlignment="Center"/>
-                                <Label Name="ValXPos" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="YPos :" VerticalAlignment="Center"/>
-                                <Label Name="ValYPos" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="Angle :" VerticalAlignment="Center"/>
-                                <Label Name="ValAngle" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="VitAng :" VerticalAlignment="Center"/>
-                                <Label Name="ValVitAng" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="VitLin :" VerticalAlignment="Center"/>
-                                <Label Name="ValVitLin" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="Télémètres IR" Grid.Row="2" Grid.Column="3" BorderBrush="SeaGreen" Width="160">
-                        <StackPanel VerticalAlignment="Top">
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="IRExGauche : " VerticalAlignment="Center"/>
-                                <Label Name="ValueIRExGauche" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="IRGauche : " VerticalAlignment="Center"/>
-                                <Label Name="ValueIRGauche" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="IRCentre : " VerticalAlignment="Center"/>
-                                <Label Name="ValueIRCentre" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="IRDroit : " VerticalAlignment="Center"/>
-                                <Label Name="ValueIRDroit" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="IRExDroit : " VerticalAlignment="Center"/>
-                                <Label Name="ValueIRExDroit" Content="0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
-                    <AsservDisplay:AsservissementRobot2RouesDisplayControl x:Name="asservSpeedDisplay"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="XPos :" VerticalAlignment="Center"/>
+                    <Label Name="ValXPos" Content="0" VerticalAlignment="Center"/>
                 </StackPanel>
-
-
-
-                <!-- <GroupBox Header="E-Leds" Grid.Row="2" Grid.Column="1" BorderBrush="SeaGreen" Background="White" Margin="30,40,30,40">
-                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <CheckBox Name="LEDVerte" Content="LVer" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDVerte"/>
-                    <CheckBox Name="LEDBleue" Content="LBle" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBleue"/>
-                    <CheckBox Name="LEDBlanche" Content="LBla" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDBlanche"/>
-                    <CheckBox Name="LEDOrange" Content="LOra" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDOrange"/>
-                    <CheckBox Name="LEDRouge" Content="LRou" HorizontalAlignment="Left" Height="21" Margin="5,3" Width="45" Checked="LEDRouge"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="YPos :" VerticalAlignment="Center"/>
+                    <Label Name="ValYPos" Content="0" VerticalAlignment="Center"/>
                 </StackPanel>
-           </GroupBox>-->
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Angle :" VerticalAlignment="Center"/>
+                    <Label Name="ValAngle" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="VitAng :" VerticalAlignment="Center"/>
+                    <Label Name="ValVitAng" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="VitLin :" VerticalAlignment="Center"/>
+                    <Label Name="ValVitLin" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
 
+        <GroupBox Header="Télémètres IR" Grid.Row="1" Grid.Column="1" BorderBrush="SeaGreen">
+            <StackPanel VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IRExGauche : " VerticalAlignment="Center"/>
+                    <Label Name="ValueIRExGauche" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IRGauche : " VerticalAlignment="Center"/>
+                    <Label Name="ValueIRGauche" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IRCentre : " VerticalAlignment="Center"/>
+                    <Label Name="ValueIRCentre" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IRDroit : " VerticalAlignment="Center"/>
+                    <Label Name="ValueIRDroit" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="IRExDroit : " VerticalAlignment="Center"/>
+                    <Label Name="ValueIRExDroit" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
 
+        <AsservDisplay:AsservissementRobot2RouesDisplayControl x:Name="asservSpeedDisplay" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2"/>
 
-            </Grid>
-        </TabItem>
-
-        <!-- Onglet secondaire -->
-        <TabItem Header="Tasserv">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="0"/>
-                    <RowDefinition Height="1.*"/>
-                </Grid.RowDefinitions>
-
-            </Grid>
-        </TabItem>
-    </TabControl>
+        
+    </Grid>
 </Window>

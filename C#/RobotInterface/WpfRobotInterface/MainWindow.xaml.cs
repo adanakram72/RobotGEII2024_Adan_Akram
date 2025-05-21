@@ -37,7 +37,7 @@ namespace WpfRobotInterface
             
             // Setting timer
             timerAffichage = new DispatcherTimer();
-            timerAffichage.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            timerAffichage.Interval = new TimeSpan(0, 0, 0, 0, 50);
             timerAffichage.Tick += TimerAffichage_Tick; 
             timerAffichage.Start();
 
@@ -52,8 +52,9 @@ namespace WpfRobotInterface
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
-            asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.positionMD, robot.positionMG);
-            asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
+            asservSpeedDisplay.UpdateIndependantOdometry(robot.positionMD, robot.positionMG);
+            asservSpeedDisplay.UpdatePolarOdometry(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
+            worldMap.UpdatePosRobot(robot.positionXOdo*100+50, robot.positionYOdo*100+50);
             oscilloSpeed.AddPointToLine(1, robot.timeFrom, robot.vitesseAngFOdo);
             oscilloSpeed.AddPointToLine(2, robot.timeFrom, robot.vitesseLinFOdo);
             while (robot.byteListReceived.Count>0)
@@ -71,8 +72,6 @@ namespace WpfRobotInterface
             }
 
         }
-
-
         private void buttonSend_Click(object sender, RoutedEventArgs e)
         {
 
@@ -373,23 +372,23 @@ namespace WpfRobotInterface
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
                     break;
 
-                /*case 0x0040:
-
+               case 0x0040:
+                    
                     break;
 
-                case 0x0050:
-                    break;
+                /*case 0x0050:
+                   break;
 
-                case 0x0051:
-                    break;
+               case 0x0051:
+                   break;
 
-                case MsgFunction.RobotState:
-                    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
-                    + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
-                    rtbReception.Text += "\nRobot␣State␣:␣" +
-                    ((StateRobot)(msgPayload[0])).ToString() +
-                    "␣-␣" + instant.ToString() + "␣ms";
-                    break;*/
+               case MsgFunction.RobotState:
+                   int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
+                   + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
+                   rtbReception.Text += "\nRobot␣State␣:␣" +
+                   ((StateRobot)(msgPayload[0])).ToString() +
+                   "␣-␣" + instant.ToString() + "␣ms";
+                   break;*/
 
                 default:
                     break;
@@ -431,6 +430,11 @@ namespace WpfRobotInterface
         }
 
         private void oscilloSpeed_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void textboxEmission_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }

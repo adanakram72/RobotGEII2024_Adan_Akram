@@ -18,7 +18,7 @@
     <ProjectReference Include="..\Robot\Robot.csproj" />
     <ProjectReference Include="..\WpfAsservissementDisplay\WpfAsservissementDisplay.csproj" />
     <ProjectReference Include="..\WpfOscilloscope\WpfOscilloscopeControl.csproj" />
-	
+    <ProjectReference Include="..\WpfWorldMap\WpfWorldMap.csproj" />
   </ItemGroup>
 
 </Project>
