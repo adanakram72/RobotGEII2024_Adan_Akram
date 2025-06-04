@@ -133,6 +133,7 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
         case 0x0030:
             break;
         case 0x0040:
+            
             break;
         case 0x0020:
             etatLed = payload[0];

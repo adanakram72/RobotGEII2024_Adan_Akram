@@ -41,7 +41,7 @@
 
         <oscillo:WpfOscilloscope x:Name="oscilloSpeed" Grid.Row="0" Grid.Column="2" Loaded="oscilloSpeed_Loaded" Margin="10,10,10,10"/>
 
-        <map:WpfWorldMap x:Name="worldMap" Grid.Row="0" Grid.Column="3"/>
+        <map:WpfWorldMap x:Name="worldMap" Grid.Row="0" Grid.Column="3" Loaded="worldMap_Loaded"/>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Width="80">
             <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Height="40" Background="WhiteSmoke"/>

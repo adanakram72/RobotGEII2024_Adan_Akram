@@ -3,6 +3,7 @@ using SciChart.Charting.Visuals.Annotations;
 using SciChart.Core.Extensions;
 using SciChart.Data.Model;
 using System;
+using System.Numerics;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Windows;
@@ -149,7 +150,6 @@ namespace WpfWorldMap_NS
             _timer.Tick += MoveRobot;
             _timer.Start();
         }
-
         private void MoveRobot(object? sender, EventArgs e)
         {
             this._robot.X1 = this.pos_X;

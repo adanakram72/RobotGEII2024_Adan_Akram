@@ -22,7 +22,6 @@ namespace WpfRobotInterface
     {
         Robot robot = new Robot();
         ExtendedSerialPort serialPort1;
-
         DispatcherTimer timerAffichage;
         public MainWindow()
         {
@@ -347,9 +346,6 @@ namespace WpfRobotInterface
                     VMotDroit.Content = robot.positionMD.ToString("F2");
                     MotGauche.Content = robot.positionMG.ToString("F2");
 
-
-
-
                     break;
 
 
@@ -435,6 +431,11 @@ namespace WpfRobotInterface
         }
 
         private void textboxEmission_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void worldMap_Loaded(object sender, RoutedEventArgs e)
         {
 
         }
