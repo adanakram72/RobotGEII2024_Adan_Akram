@@ -103,7 +103,7 @@ namespace WpfRobotInterface
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            /*byte[] byteList = new byte[20];
+            byte[] byteList = new byte[20];
             for (int i = 0; i < byteList.Length; i++)
             {
                 byteList[i] = (byte)(2 * i);
@@ -114,7 +114,7 @@ namespace WpfRobotInterface
             byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
             int msgPayloadLength = msgPayload.Length;
             int msgFunction = 0x0080;
-            UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);*/
+            UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
         }
 
         void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
@@ -328,9 +328,10 @@ namespace WpfRobotInterface
                         ELRouge = Convert.ToBoolean(msgPayload[1]);
                     }
                     break;
+
                 case 0x0061:
-                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4)*100;
-                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8)*10000;
+                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4);
+                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8);
                     robot.angleRadFOdo = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLinFOdo = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngFOdo = BitConverter.ToSingle(msgPayload, 20);
@@ -338,8 +339,8 @@ namespace WpfRobotInterface
                     robot.positionMD = BitConverter.ToSingle(msgPayload, 28);
                     robot.positionMG = BitConverter.ToSingle(msgPayload, 32);
 
-                    ValXPos.Content = robot.positionXOdo.ToString("F2");
-                    ValYPos.Content = robot.positionYOdo.ToString("F2");
+                    ValXPos.Content = robot.positionXOdo.ToString("F5");
+                    ValYPos.Content = robot.positionYOdo.ToString("F5");
                     ValAngle.Content = robot.angleRadFOdo.ToString("F2");
                     ValVitLin.Content = robot.vitesseLinFOdo.ToString("F2");
                     ValVitAng.Content = robot.vitesseAngFOdo.ToString("F2");
@@ -368,9 +369,9 @@ namespace WpfRobotInterface
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
                     break;
 
-               case 0x0040:
-                    
-                    break;
+                //case 0x0040:
+
+                //     break;
 
                 /*case 0x0050:
                    break;

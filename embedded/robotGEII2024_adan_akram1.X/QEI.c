@@ -58,14 +58,14 @@ void QEIUpdateData() {
     robotState.vitesseAngulaireFromOdometry = (robotState.vitesseDroitFromOdometry - robotState.vitesseGaucheFromOdometry) / DISTROUES;
 
     //Mise a jour du positionnement terrain a t-1
-    robotState.xPosFromOdometry_1 = robotState.xPosFromOdometry;
-    robotState.yPosFromOdometry_1 = robotState.yPosFromOdometry;
-    robotState.angleRadianFromOdometry_1 = robotState.angleRadianFromOdometry;
+//    robotState.xPosFromOdometry_1 = robotState.xPosFromOdometry;
+//    robotState.yPosFromOdometry_1 = robotState.yPosFromOdometry;
+//    robotState.angleRadianFromOdometry_1 = robotState.angleRadianFromOdometry;
 
     //Calcul des positions dans le referentiel du terrain
-    robotState.xPosFromOdometry = (robotState.vitesseLineaireFromOdometry * cos(robotState.angleRadianFromOdometry)) / (FREQ_ECH_QEI);
-    robotState.yPosFromOdometry = (robotState.vitesseLineaireFromOdometry * sin(robotState.angleRadianFromOdometry)) / (FREQ_ECH_QEI);
-    robotState.angleRadianFromOdometry = robotState.vitesseAngulaireFromOdometry / FREQ_ECH_QEI;
+    robotState.xPosFromOdometry += (robotState.vitesseLineaireFromOdometry * cos(robotState.angleRadianFromOdometry)) / (FREQ_ECH_QEI);
+    robotState.yPosFromOdometry += (robotState.vitesseLineaireFromOdometry * sin(robotState.angleRadianFromOdometry)) / (FREQ_ECH_QEI);
+    robotState.angleRadianFromOdometry += robotState.vitesseAngulaireFromOdometry / FREQ_ECH_QEI;
     if (robotState.angleRadianFromOdometry > PI)
         robotState.angleRadianFromOdometry -= 2 * PI;
     if (robotState.angleRadianFromOdometry < -PI)

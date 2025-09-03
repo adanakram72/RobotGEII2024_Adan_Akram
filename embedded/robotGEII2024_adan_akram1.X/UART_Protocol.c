@@ -8,7 +8,7 @@
 #include "IO.h"
 
 // Fonction pour envoyer les valeurs des télémètres via UART
-/*void EnvoieDistanceTelemetre(){
+void EnvoieDistanceTelemetre(){
     unsigned char payload[10];
    int val_ExG = (int) robotState.distanceTelemetreExGauche;
     payload[0] = (unsigned char) ((int)robotState.distanceTelemetreExGauche);
@@ -23,7 +23,8 @@
     payload[9] = (unsigned char) (((int)robotState.distanceTelemetreExDroite) >> 8);
     UartEncodeAndSendMessage(0x0030, 10, payload);
 }
-*/
+
+
 /*void EvoieMoteurInfo(){
     
 }*/

@@ -37,9 +37,12 @@ void InitIO() {
     // Gestion des pin remappables
     /****************************************************************************************************/
     UnlockIO(); // On unlock les registres d'entrées/sorties, ainsi que les registres des PPS
-
-    _U1RXR = 78; //Remappe la RP78 sur l?éentre Rx1
-    _RP79R = 0b00001; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
+    
+//     _U1RXR = 78; //Remappe la RP78 sur l?éentre Rx1
+//     _RP79R = 0b00001; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
+    
+    _U1RXR = 18; //Remappe la RP78 sur l?éentre Rx1
+    _RP98R = 0b00001; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
     
     //******************** QEI *****************
     _QEA2R = 97; //assign QEI A to pin RP97
@@ -47,8 +50,6 @@ void InitIO() {
     _QEA1R = 126; //assign QEI A to pin RP70
     _QEB1R = 124; //assign QEI B to pin RP69
 
-//    _U2RXR = 18; //Remappe la RP78 sur l?éentre Rx1
-//    _RP98R = 0b00011; //Remappe la sortie Tx1 vers RP79 //Assignation des remappable pins
 
     LockIO(); // On lock les registres d'entrées/sorties, ainsi que les registres des PPS
 }

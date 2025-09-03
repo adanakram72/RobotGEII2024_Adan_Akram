@@ -22,27 +22,19 @@ void SendMessage(unsigned char* message, int length) {
 }
 
 void CB_TX1_Add(unsigned char value) {
-    int nextHead = cbTx1Head + 1;
-    if (nextHead >= CBTX1_BUFFER_SIZE) {
-        nextHead = 0;
-    }
-    if (nextHead != cbTx1Tail) {
-        cbTx1Buffer[cbTx1Head] = value;
-        cbTx1Head = nextHead;
+
+    cbTx1Buffer[cbTx1Head++] = value;
+    if (cbTx1Head >= CBTX1_BUFFER_SIZE) {
+        cbTx1Head = 0;
     }
 }
 
 unsigned char CB_TX1_Get(void) {
-    unsigned char value;
-    if (cbTx1Tail != cbTx1Head) {
-        value = cbTx1Buffer[cbTx1Tail];
-        cbTx1Tail++;
-        if (cbTx1Tail >= CBTX1_BUFFER_SIZE) {
-            cbTx1Tail = 0;
-        }
-        return value;
+    unsigned char value = cbTx1Buffer[cbTx1Tail++];
+    if (cbTx1Tail >= CBTX1_BUFFER_SIZE) {
+        cbTx1Tail = 0;
     }
-    return 0;
+    return value;
 }
 
 void __attribute__((interrupt, no_auto_psv)) _U1TXInterrupt(void) {
@@ -75,6 +67,6 @@ int CB_TX1_GetDataSize(void) {
 
 int CB_TX1_GetRemainingSize(void) {
     int remainingSize;
-    remainingSize = (CBTX1_BUFFER_SIZE - 1 - CB_TX1_GetDataSize());
+    remainingSize = (CBTX1_BUFFER_SIZE - CB_TX1_GetDataSize());
     return remainingSize;
 }

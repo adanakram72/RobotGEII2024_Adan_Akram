@@ -166,12 +166,14 @@ namespace WpfWorldMap_NS
         {
             this._robot.X1 = this.pos_X;
             this._robot.Y1 = this.pos_Y;
+            this._rotation.Angle = this._angle;
         }
 
-        public void UpdatePosRobot(double X,  double Y)
+        public void UpdatePosRobot(double X,  double Y, double angleDegrees)
         {
             this.pos_X = X;
             this.pos_Y = Y;
+            this._angle = angleDegrees;
         }
     }
 }

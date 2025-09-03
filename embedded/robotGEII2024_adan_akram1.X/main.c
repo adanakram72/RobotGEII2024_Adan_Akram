@@ -64,7 +64,7 @@ int main(void) {
     InitUART();
     InitQEI1();    
     InitQEI2();
-    SetFreqTimer4(1000);
+    //SetFreqTimer4(1000);
     
     // BOUCLE PRINCIPALE
     while (1) {
@@ -72,33 +72,7 @@ int main(void) {
 //        UartEncodeAndSendMessage(0x0080, sizeof(payload), payload);
 //        __delay32(4000000);
     }
-
     return 0;
-
-    if (TIME1 == 1) {
-        tstart = 1;
-        tstop = 0;
-    }
-
-
-    if (Vitesse > 21) {
-        LED_BLANCHE_2 = 1;
-        LED_BLEUE_2 = 1;
-        LED_ORANGE_2 = 1;
-        LED_ROUGE_2 = 1;
-        LED_VERTE_2 = 1;
-    }
-
-    if (robotState.distanceTelemetreCentre < 47 && robotState.distanceTelemetreGauche < 47 && robotState.distanceTelemetreDroit < 47) {
-        Vitesse = 14;
-    } else {
-        Vitesse = 22;
-        LED_BLANCHE_2 = 1;
-        LED_BLEUE_2 = 1;
-        LED_ORANGE_2 = 1;
-        LED_ROUGE_2 = 1;
-        LED_VERTE_2 = 1;
-    }
 }
 
 
