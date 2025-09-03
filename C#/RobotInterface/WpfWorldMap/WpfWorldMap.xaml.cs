@@ -8,14 +8,17 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+
 
 namespace WpfWorldMap_NS
 {
     public partial class WpfWorldMap : UserControl
     {
+        private RotateTransform _rotation;
         private CustomAnnotation _robot;
         private DispatcherTimer _timer;
         private double _angle;
@@ -32,24 +35,33 @@ namespace WpfWorldMap_NS
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Crée un cercle initial à (20, 30)
-            var cercle = new Ellipse
+            var triangle = new Polygon
             {
-                Width = 20,
-                Height = 20,
+                Points = new PointCollection
+    {
+        new Point(0, -10),
+        new Point(-7, 7),
+        new Point(7, 7)
+    },
                 Fill = Brushes.Red,
                 Stroke = Brushes.Black,
-                StrokeThickness = 1
+                StrokeThickness = 1,
+                RenderTransformOrigin = new Point(0.5, 0.5)
             };
+
+            var rotation = new RotateTransform(0);
+            triangle.RenderTransform = rotation;
+            this._rotation = rotation;
 
             this._robot = new CustomAnnotation
             {
                 X1 = 20,
                 Y1 = 30,
-                Content = cercle,
+                Content = triangle,
                 HorizontalAnchorPoint = HorizontalAnchorPoint.Center,
                 VerticalAnchorPoint = VerticalAnchorPoint.Center
             };
+
 
             sciChartSurface.Annotations.Add(_robot);
 
