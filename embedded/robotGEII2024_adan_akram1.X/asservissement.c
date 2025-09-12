@@ -22,7 +22,7 @@
 
 #define PID_Data 0x0040
 
-//void SendPositionData() {
+//void SendPositionData2() {
 //    unsigned char positionPayload[108];
 //    getBytesFromDouble(positionPayload, 0, timestamp);
 //    getBytesFromDouble(positionPayload, 8, (double) (PidCorrector->Kp));
