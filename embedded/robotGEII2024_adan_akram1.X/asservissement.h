@@ -22,17 +22,17 @@ extern "C" {
         double erreurIntegrale;
         double epsilon_1;
         double erreur;
-        //For Debug only
         double corrP;
         double corrI;
         double corrD;
     } PidCorrector;
 
-void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double pro);
-    
-#ifdef	__cplusplus
-}
-#endif
+void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax);
+
+//void SendPidX(void);
+//void SendPidTheta(void);
+//void SendCommandeErreur(void);
 
 #endif	/* ASSERVISSEMENT_H */
+
 

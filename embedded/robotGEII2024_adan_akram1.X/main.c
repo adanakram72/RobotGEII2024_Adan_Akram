@@ -22,6 +22,7 @@
 #include "UART_protocol.h"
 #include "QEI.h"
 #include <libpic30.h>
+#include "asservissement.h"
 
 unsigned char stateRobot;
 unsigned int tstart = 0;
@@ -46,15 +47,10 @@ void updateSensorValues() {
     }
 }
 
-
 int main(void) {
-    /***********************************************************************************************/
-    //Initialisation oscillateur
-    /***********************************************************************************************/
+
     InitOscillator();
-    /***********************************************************************************************/
-    //Configuration des input et output (IO)
-    /***********************************************************************************************/
+
     InitIO();
     InitTimer1();
     InitTimer4();
@@ -64,16 +60,24 @@ int main(void) {
     InitUART();
     InitQEI1();    
     InitQEI2();
-    //SetFreqTimer4(1000);
+ 
+    
+    
+//    SetupPidAsservissement(&robotState.PidX, 1.5, 1.5f, 0.0f,100.0f, 100.0f, 100.0f);
+//    SetupPidAsservissement(&robotState.PidTheta, 3.1f, 42.0f, 0.0f,100.0f, 100.0f, 100.0f);
+    
     
     // BOUCLE PRINCIPALE
     while (1) {
-//        unsigned char payload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r'};
-//        UartEncodeAndSendMessage(0x0080, sizeof(payload), payload);
-//        __delay32(4000000);
+        
+    
+    
     }
+   
     return 0;
 }
+
+
 
 
 void Cap() {

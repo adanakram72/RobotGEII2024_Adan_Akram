@@ -1,35 +1,36 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <xc.h>
 #include "UART_Protocol.h"
 #include "CB_TX1.h"
-#include "robot.h"
-#include "ADC.h"
 #include "IO.h"
+#include "Utilities.h"
+#include "robot.h"
+#include "asservissement.h"
+#include <math.h>
 
 // Fonction pour envoyer les valeurs des télémètres via UART
-void EnvoieDistanceTelemetre(){
+
+void EnvoieDistanceTelemetre() {
     unsigned char payload[10];
-   int val_ExG = (int) robotState.distanceTelemetreExGauche;
-    payload[0] = (unsigned char) ((int)robotState.distanceTelemetreExGauche);
-    payload[1] = (unsigned char) (((int)robotState.distanceTelemetreExGauche) >> 8);
-    payload[2] = (unsigned char) ((int)robotState.distanceTelemetreGauche);
-    payload[3] = (unsigned char) (((int)robotState.distanceTelemetreGauche) >> 8);
-    payload[4] = (unsigned char) ((int)robotState.distanceTelemetreCentre);
-    payload[5] = (unsigned char) (((int)robotState.distanceTelemetreCentre) >> 8);
-    payload[6] = (unsigned char) ((int)robotState.distanceTelemetreDroit);
-    payload[7] = (unsigned char) (((int)robotState.distanceTelemetreDroit) >> 8);
-    payload[8] = (unsigned char) ((int)robotState.distanceTelemetreExDroite);
-    payload[9] = (unsigned char) (((int)robotState.distanceTelemetreExDroite) >> 8);
+    int val_ExG = (int) robotState.distanceTelemetreExGauche;
+    payload[0] = (unsigned char) ((int) robotState.distanceTelemetreExGauche);
+    payload[1] = (unsigned char) (((int) robotState.distanceTelemetreExGauche) >> 8);
+    payload[2] = (unsigned char) ((int) robotState.distanceTelemetreGauche);
+    payload[3] = (unsigned char) (((int) robotState.distanceTelemetreGauche) >> 8);
+    payload[4] = (unsigned char) ((int) robotState.distanceTelemetreCentre);
+    payload[5] = (unsigned char) (((int) robotState.distanceTelemetreCentre) >> 8);
+    payload[6] = (unsigned char) ((int) robotState.distanceTelemetreDroit);
+    payload[7] = (unsigned char) (((int) robotState.distanceTelemetreDroit) >> 8);
+    payload[8] = (unsigned char) ((int) robotState.distanceTelemetreExDroite);
+    payload[9] = (unsigned char) (((int) robotState.distanceTelemetreExDroite) >> 8);
     UartEncodeAndSendMessage(0x0030, 10, payload);
 }
-
 
 /*void EvoieMoteurInfo(){
     
 }*/
 
-void sendled(void){
+void sendled(void) {
     unsigned char led[5];
     led[0] = LED_VERTE_2;
     led[1] = LED_BLEUE_2;
@@ -67,7 +68,6 @@ unsigned char UartCalculateChecksum(int msgFunction, int msgPayloadLength, unsig
     }
     return c;
 }
-
 
 int msgDecodedFunction = 0;
 int msgDecodedPayloadLength = 0;
@@ -127,29 +127,68 @@ void UartDecodeMessage(unsigned char c) {
     }
 }
 
+float correcteurKp, correcteurKd, correcteurKi, consigneLineaire, limitPX, limitIX, limitDX;
+
+float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi, consigneAngulaire, limitPTheta, limitITheta, limitDTheta;
+
 void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* payload) {
     int etatLed;
     switch (function) {
         case 0x0030:
             break;
         case 0x0040:
-            
+
             break;
         case 0x0020:
             etatLed = payload[0];
-            if(etatLed == 0) {
+            if (etatLed == 0) {
                 LED_VERTE_2 = payload[1];
             } else if (etatLed == 1) {
                 LED_BLEUE_2 = payload[1];
-            }else if (etatLed == 2) {
+            } else if (etatLed == 2) {
                 LED_BLANCHE_2 = payload[1];
-            }else if (etatLed == 3) {
+            } else if (etatLed == 3) {
                 LED_ORANGE_2 = payload[1];
-            }else if (etatLed == 4) {
+            } else if (etatLed == 4) {
                 LED_ROUGE_2 = payload[1];
             }
             break;
-        default :
-            break; 
+        case PidXConf:
+            correcteurKp = getFloat(payload, 0);
+            correcteurKd = getFloat(payload, 4);
+            correcteurKi = getFloat(payload, 8);
+            limitPX = getFloat(payload, 12);
+            limitIX = getFloat(payload, 16);
+            limitDX = getFloat(payload, 20);
+
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 0, (float) (correcteurKp));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 4, (float) (correcteurKd));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 8, (float) (correcteurKi));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 12, (float) (limitPX));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 16, (float) (limitIX));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 20, (float) (limitDX));
+            
+            SetupPidAsservissement(&robotState.PidX, (double)correcteurKp, (double)correcteurKi, (double)correcteurKd,(double)limitPX, (double)limitPX, (double)limitPX);
+            break;
+            
+        case PidThetaConf:
+            correcteurThetaKp = getFloat(payload, 0);
+            correcteurThetaKd = getFloat(payload, 4);
+            correcteurThetaKi = getFloat(payload, 8);
+            limitPTheta = getFloat(payload, 12);
+            limitITheta = getFloat(payload, 16);
+            limitDTheta = getFloat(payload, 20);
+            
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 12, (float) (limitPTheta));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 16, (float) (limitITheta));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 20, (float) (limitDTheta));
+            
+            SetupPidAsservissement(&robotState.PidTheta, (double)correcteurThetaKp, (double)correcteurThetaKi, (double)correcteurThetaKd,(double)limitPTheta, (double)limitITheta, (double)limitDTheta);
+            break;
+        default:
+            break;
     }
 }

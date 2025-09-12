@@ -1,3 +1,4 @@
+#include "asservissement.h"
 
 #ifndef ROBOT_H
 #define ROBOT_H
@@ -29,9 +30,18 @@ typedef struct robotStateBITS {
             float angleRadianFromOdometry_1;
             float angleRadianFromOdometry;
             float timeFrom;
+            
+            char correcteursXPayload[24];
+            char correcteursThetaPayload[24];
+            char consignes[8];
+            
+            PidCorrector PidX ;
+            PidCorrector PidTheta ;
         };
+       
     };
 } ROBOT_STATE_BITS;
+
 
 extern volatile ROBOT_STATE_BITS robotState;
 #endif /* ROBOT_H */

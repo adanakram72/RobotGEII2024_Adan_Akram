@@ -53,6 +53,7 @@ namespace WpfRobotInterface
         {
             asservSpeedDisplay.UpdateIndependantOdometry(robot.positionMD, robot.positionMG);
             asservSpeedDisplay.UpdatePolarOdometry(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
+            asservSpeedDisplay.UpdatePolarCommandValues(robot.correcteurKd,robot.correcteurKp)
             worldMap.UpdatePosRobot(robot.positionXOdo*100+50, robot.positionYOdo*100+50);
             oscilloSpeed.AddPointToLine(1, robot.timeFrom, robot.vitesseAngFOdo);
             oscilloSpeed.AddPointToLine(2, robot.timeFrom, robot.vitesseLinFOdo);
@@ -103,19 +104,61 @@ namespace WpfRobotInterface
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            byte[] byteList = new byte[20];
-            for (int i = 0; i < byteList.Length; i++)
-            {
-                byteList[i] = (byte)(2 * i);
-            }
-            byteList[byteList.Length - 1] = (byte)'\n';
-            serialPort1.Write(byteList, 0, byteList.Length);
-            string messageStr = "Bonjour";
-            byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
-            int msgPayloadLength = msgPayload.Length;
-            int msgFunction = 0x0080;
-            UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
+            //byte[] byteList = new byte[20];
+            //for (int i = 0; i < byteList.Length; i++)
+            //{
+            //    byteList[i] = (byte)(2 * i);
+            //}
+            //byteList[byteList.Length - 1] = (byte)'\n';
+            //serialPort1.Write(byteList, 0, byteList.Length);
+            //string messageStr = "Bonjour";
+            //byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
+            //int msgPayloadLength = msgPayload.Length;
+            //int msgFunction = 0x0080;
+            //UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
+            SendPIDValues();
         }
+
+        private void SendPIDValues()
+        {
+            // --- PID X ---
+            float KpX = float.Parse(TextBoxKpX.Text);     // TextBox pour Kp X
+            float KiX = float.Parse(TextBoxKiX.Text);     // TextBox pour Ki X
+            float KdX = float.Parse(TextBoxKdX.Text);     // TextBox pour Kd X
+            float limitPX = float.Parse(TextBoxPmaxX.Text);
+            float limitIX = float.Parse(TextBoxImaxX.Text);
+            float limitDX = float.Parse(TextBoxDmaxX.Text);
+
+            byte[] pidXPayload = new byte[24];
+            BitConverter.GetBytes(KpX).CopyTo(pidXPayload, 0);
+            BitConverter.GetBytes(KdX).CopyTo(pidXPayload, 4);
+            BitConverter.GetBytes(KiX).CopyTo(pidXPayload, 8);
+            BitConverter.GetBytes(limitPX).CopyTo(pidXPayload, 12);
+            BitConverter.GetBytes(limitIX).CopyTo(pidXPayload, 16);
+            BitConverter.GetBytes(limitDX).CopyTo(pidXPayload, 20);
+
+            UartEncodeAndSendMessage(0x0091, pidXPayload.Length, pidXPayload);
+
+            // --- PID Theta ---
+            float KpTheta = float.Parse(TextBoxKpTheta.Text);
+            float KiTheta = float.Parse(TextBoxKiTheta.Text);
+            float KdTheta = float.Parse(TextBoxKdTheta.Text);
+            float limitPTheta = float.Parse(TextBoxPmaxTheta.Text);
+            float limitITheta = float.Parse(TextBoxImaxTheta.Text);
+            float limitDTheta = float.Parse(TextBoxDmaxTheta.Text);
+
+            byte[] pidThetaPayload = new byte[24];
+            BitConverter.GetBytes(KpTheta).CopyTo(pidThetaPayload, 0);
+            BitConverter.GetBytes(KdTheta).CopyTo(pidThetaPayload, 4);
+            BitConverter.GetBytes(KiTheta).CopyTo(pidThetaPayload, 8);
+            BitConverter.GetBytes(limitPTheta).CopyTo(pidThetaPayload, 12);
+            BitConverter.GetBytes(limitITheta).CopyTo(pidThetaPayload, 16);
+            BitConverter.GetBytes(limitDTheta).CopyTo(pidThetaPayload, 20);
+
+            UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
+        }
+
+
 
         void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
         {
@@ -349,6 +392,37 @@ namespace WpfRobotInterface
 
                     break;
 
+                case 0x0091: // pid x
+                    robot.correcteurKp = BitConverter.ToSingle(msgPayload, 0);
+                    robot.correcteurKd = BitConverter.ToSingle(msgPayload, 4);
+                    robot.correcteurKi = BitConverter.ToSingle(msgPayload, 8);
+                    robot.corrPmaxX = BitConverter.ToSingle(msgPayload, 12);
+                    robot.corrImaxX = BitConverter.ToSingle(msgPayload, 16);
+                    robot.corrDmaxX = BitConverter.ToSingle(msgPayload, 20);
+            
+                    ValKpX.Content = robot.correcteurKp.ToString("F2");
+                    ValKiX.Content = robot.correcteurKi.ToString("F2");
+                    ValKdX.Content = robot.correcteurKd.ToString("F2");
+                    ValPmaxX.Content = robot.corrPmaxX.ToString("F2");
+                    ValImaxX.Content = robot.corrImaxX.ToString("F2");
+                    ValDmaxX.Content = robot.corrDmaxX.ToString("F2");
+                    break;
+
+                case 0x0092: //theta
+                    robot.correcteurThetaKp = BitConverter.ToSingle(msgPayload, 0);
+                    robot.correcteurThetaKd = BitConverter.ToSingle(msgPayload, 4);
+                    robot.correcteurThetaKi = BitConverter.ToSingle(msgPayload, 8);
+                    robot.corrPmaxTheta = BitConverter.ToSingle(msgPayload, 12);
+                    robot.corrImaxTheta = BitConverter.ToSingle(msgPayload, 16);
+                    robot.corrDmaxTheta = BitConverter.ToSingle(msgPayload, 20);
+
+                    ValKpTheta.Content = robot.correcteurThetaKp.ToString("F2");
+                    ValKiTheta.Content = robot.correcteurThetaKi.ToString("F2");
+                    ValKdTheta.Content = robot.correcteurThetaKd.ToString("F2");
+                    ValPmaxTheta.Content = robot.corrPmaxTheta.ToString("F2");
+                    ValImaxTheta.Content = robot.corrImaxTheta.ToString("F2");
+                    ValDmaxTheta.Content = robot.corrDmaxTheta.ToString("F2");
+                    break;
 
                 case 0x0030:
                     byte[] value = new byte[2];
@@ -367,26 +441,6 @@ namespace WpfRobotInterface
 
                     Buffer.BlockCopy(msgPayload, 8, value, 0, 2);
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
-                    break;
-
-                //case 0x0040:
-
-                //     break;
-
-                /*case 0x0050:
-                   break;
-
-               case 0x0051:
-                   break;
-
-               case MsgFunction.RobotState:
-                   int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
-                   + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
-                   rtbReception.Text += "\nRobot␣State␣:␣" +
-                   ((StateRobot)(msgPayload[0])).ToString() +
-                   "␣-␣" + instant.ToString() + "␣ms";
-                   break;*/
-
                 default:
                     break;
             }

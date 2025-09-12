@@ -1,6 +1,5 @@
 
 #include "asservissement.h"
-
 #include "QEI.h"
 #include "timer.h"
 #include "IO.h"
@@ -11,28 +10,48 @@
 #include "robot.h"
 #include <xc.h>
 
-//void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
-//    PidCorr->Kp = Kp;
-//    PidCorr->erreurProportionelleMax = proportionelleMax; //On limite la correction due au Kp
-//    PidCorr->Ki = Ki;
-//    PidCorr->erreurIntegraleMax = integralMax; //On limite la correction due au Ki
-//    PidCorr->Kd = Kd;
-//    PidCorr->erreurDeriveeMax = deriveeMax;
+
+
+void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
+    PidCorr->Kp = Kp;
+    PidCorr->erreurProportionelleMax = proportionelleMax; //On limite la correction due au Kp
+    PidCorr->Ki = Ki;
+    PidCorr->erreurIntegraleMax = integralMax; //On limite la correction due au Ki
+    PidCorr->Kd = Kd;
+    PidCorr->erreurDeriveeMax = deriveeMax;
+    PidCorr->erreurIntegrale = 0;
+    PidCorr->epsilon_1 = 0;
+}
+
+//void SendPidX() {
+//    unsigned char asservissementXPayload[24];
+//    getBytesFromFloat((unsigned char*)asservissementXPayload, 0, (float) (robotState.PidX.corrP));
+//    getBytesFromFloat((unsigned char*)asservissementXPayload, 4, (float) (robotState.PidX.erreurProportionelleMax));
+//    getBytesFromFloat((unsigned char*)asservissementXPayload, 8, (float) (robotState.PidX.corrI));
+//    getBytesFromFloat((unsigned char*)asservissementXPayload, 12, (float) (robotState.PidX.erreurIntegraleMax));
+//    getBytesFromFloat((unsigned char*)asservissementXPayload, 16, (float) (robotState.PidX.corrD));
+//    getBytesFromFloat((unsigned char*)asservissementXPayload, 20, (float) (robotState.PidX.erreurDeriveeMax));
+//    
+//    UartEncodeAndSendMessage(ASSERVISSEMENTX, 24, (unsigned char*)asservissementXPayload);        
 //}
-
-#define PID_Data 0x0040
-
-//void SendPositionData2() {
-//    unsigned char positionPayload[108];
-//    getBytesFromDouble(positionPayload, 0, timestamp);
-//    getBytesFromDouble(positionPayload, 8, (double) (PidCorrector->Kp));
-//    getBytesFromDouble(positionPayload, 16, (double) (PidCorrector->Ki));
-//    getBytesFromDouble(positionPayload, 24, (double) (PidCorrector->corrD));
-//    getBytesFromDouble(positionPayload, 32, (double) (PidCorrector->corrI));
-//    getBytesFromDouble(positionPayload, 40, (double) (PidCorrector->corrP));
-//    getBytesFromDouble(positionPayload, 48, (double) (PidCorrector->epsilon_1));
-//    getBytesFromDouble(positionPayload, 56, (double) (PidCorrector->erreur));
-//    getBytesFromDouble(positionPayload, 64, (double) (PidCorrector->erreurDeriveeMax));
-//    getBytesFromDouble(positionPayload, 72, (double) (PidCorrector->erreurIntegrale));
-//    UartEncodeAndSendMessage(PID_Data, 80, positionPayload);
+//
+//void SendPidTheta() {
+//    unsigned char asservissementThetaPayload[24];
+//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 0, (float) (robotState.PidTheta.corrP));
+//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 4, (float) (robotState.PidTheta.erreurProportionelleMax));
+//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 8, (float) (robotState.PidTheta.corrI));
+//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 12, (float) (robotState.PidTheta.erreurIntegraleMax));
+//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 16, (float) (robotState.PidTheta.corrD));
+//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 20, (float) (robotState.PidTheta.erreurDeriveeMax));
+//    
+//    UartEncodeAndSendMessage(ASSERVISSEMENTTHETA, 24, (unsigned char*)asservissementThetaPayload);
+//}
+//
+//void SendCommandeErreur() {
+//    unsigned char CommandeErreurPayload[16];
+//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.xCorrectionVitesse));
+//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 4, (float) (robotState.thetaCorrectionVitesse));
+//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 8, (float) (robotState.PidX.erreur));
+//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 12, (float) (robotState.PidTheta.erreur));
+//    UartEncodeAndSendMessage(ASSERVISSEMENTERREUR, 16, (unsigned char*)CommandeErreurPayload);
 //}
