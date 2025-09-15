@@ -12,7 +12,7 @@
 
 void EnvoieDistanceTelemetre() {
     unsigned char payload[10];
-   // int val_ExG = (int) robotState.distanceTelemetreExGauche;
+    // int val_ExG = (int) robotState.distanceTelemetreExGauche;
     payload[0] = (unsigned char) ((int) robotState.distanceTelemetreExGauche);
     payload[1] = (unsigned char) (((int) robotState.distanceTelemetreExGauche) >> 8);
     payload[2] = (unsigned char) ((int) robotState.distanceTelemetreGauche);
@@ -153,41 +153,81 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
                 LED_ROUGE_2 = payload[1];
             }
             break;
+
         case PidXConf:
             correcteurKp = getFloat(payload, 0);
-            correcteurKd = getFloat(payload, 4);
-            correcteurKi = getFloat(payload, 8);
+            correcteurKi = getFloat(payload, 4);
+            correcteurKd = getFloat(payload, 8);
             limitPX = getFloat(payload, 12);
             limitIX = getFloat(payload, 16);
             limitDX = getFloat(payload, 20);
 
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 0, (float) (correcteurKp));
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 4, (float) (correcteurKd));
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 8, (float) (correcteurKi));
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 12, (float) (limitPX));
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 16, (float) (limitIX));
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 20, (float) (limitDX));
+            SetupPidAsservissement(&robotState.PidX,
+                    (double) correcteurKp,
+                    (double) correcteurKi,
+                    (double) correcteurKd,
+                    (double) limitPX,
+                    (double) limitIX,
+                    (double) limitDX);
             
-            SetupPidAsservissement(&robotState.PidX, (double)correcteurKp, (double)correcteurKi, (double)correcteurKd,(double)limitPX, (double)limitPX, (double)limitPX);
+            
+            Correcteur(&robotState.PidX, 5);
+            
+
+            // Construction du payload complet (48 octets)
+            getBytesFromFloat(robotState.correcteursXPayload, 0, (float)correcteurKp);
+            getBytesFromFloat(robotState.correcteursXPayload, 4, correcteurKi);
+            getBytesFromFloat(robotState.correcteursXPayload, 8, correcteurKd);
+            getBytesFromFloat(robotState.correcteursXPayload, 12, limitPX);
+            getBytesFromFloat(robotState.correcteursXPayload, 16, limitIX);
+            getBytesFromFloat(robotState.correcteursXPayload, 20, limitDX);
+
+            getBytesFromFloat(robotState.correcteursXPayload, 24, robotState.PidX.corrP);
+            getBytesFromFloat(robotState.correcteursXPayload, 28, robotState.PidX.erreurProportionelleMax);
+            getBytesFromFloat(robotState.correcteursXPayload, 32, robotState.PidX.corrI);
+            getBytesFromFloat(robotState.correcteursXPayload, 36, robotState.PidX.erreurIntegraleMax);
+            getBytesFromFloat(robotState.correcteursXPayload, 40, robotState.PidX.corrD);
+            getBytesFromFloat(robotState.correcteursXPayload, 44, robotState.PidX.erreurDeriveeMax);
+
+            UartEncodeAndSendMessage(PidXConf, 48, robotState.correcteursXPayload);
             break;
-            
+
+
         case PidThetaConf:
             correcteurThetaKp = getFloat(payload, 0);
-            correcteurThetaKd = getFloat(payload, 4);
-            correcteurThetaKi = getFloat(payload, 8);
+            correcteurThetaKi = getFloat(payload, 4);
+            correcteurThetaKd = getFloat(payload, 8);
             limitPTheta = getFloat(payload, 12);
             limitITheta = getFloat(payload, 16);
             limitDTheta = getFloat(payload, 20);
+
+            SetupPidAsservissement(&robotState.PidTheta,
+                    (double) correcteurThetaKp,
+                    (double) correcteurThetaKi,
+                    (double) correcteurThetaKd,
+                    (double) limitPTheta,
+                    (double) limitITheta,
+                    (double) limitDTheta);
             
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 12, (float) (limitPTheta));
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 16, (float) (limitITheta));
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 20, (float) (limitDTheta));
-            
-            SetupPidAsservissement(&robotState.PidTheta, (double)correcteurThetaKp, (double)correcteurThetaKi, (double)correcteurThetaKd,(double)limitPTheta, (double)limitITheta, (double)limitDTheta);
+            Correcteur(&robotState.PidTheta, 0.005);
+
+            getBytesFromFloat(robotState.correcteursThetaPayload, 0, correcteurThetaKp);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 4, correcteurThetaKi);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 8, correcteurThetaKd);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 12, limitPTheta);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 16, limitITheta);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 20, limitDTheta);
+
+            getBytesFromFloat(robotState.correcteursThetaPayload, 24, robotState.PidTheta.corrP);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 28, robotState.PidTheta.erreurProportionelleMax);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 32, robotState.PidTheta.corrI);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 36, robotState.PidTheta.erreurIntegraleMax);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 40, robotState.PidTheta.corrD);
+            getBytesFromFloat(robotState.correcteursThetaPayload, 44, robotState.PidTheta.erreurDeriveeMax);
+
+            UartEncodeAndSendMessage(PidThetaConf, 48, robotState.correcteursThetaPayload);
             break;
+
         default:
             break;
     }

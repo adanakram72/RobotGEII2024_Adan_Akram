@@ -15,19 +15,34 @@ namespace Robot_NS
         public float distanceTelemetreGauche;
         public float positionXOdo, positionYOdo, vitesseLinFOdo, vitesseAngFOdo, angleRadFOdo, timeFrom, positionMD, positionMG;
 
-        public float correcteurKp;
-        public float correcteurKd;
-        public float correcteurKi;
-        public float corrPmaxX;
-        public float corrImaxX;
-        public float corrDmaxX;
+        public float KpX;
+        public float KiX;
+        public float KdX;
+        public float corrLimitPX;
+        public float corrLimitIX;
+        public float corrLimitDX;
 
-        public float correcteurThetaKp;
-        public float correcteurThetaKd;
-        public float correcteurThetaKi;
-        public float corrPmaxTheta;
-        public float corrImaxTheta;
-        public float corrDmaxTheta;
+        public float KpTheta;
+        public float KiTheta;
+        public float KdTheta;
+        public float corrLimitPTheta;
+        public float corrLimitITheta;
+        public float corrLimitDTheta;
+
+        public float corrPX;
+        public float erreurPX;
+        public float corrIX;
+        public float erreurIX;
+        public float corrDX;
+        public float erreurDX;
+
+        public float corrPTheta;
+        public float erreurPTheta;
+        public float corrITheta;
+        public float erreurITheta;
+        public float corrDTheta;
+        public float erreurDTheta;
+
 
 
         public Robot()

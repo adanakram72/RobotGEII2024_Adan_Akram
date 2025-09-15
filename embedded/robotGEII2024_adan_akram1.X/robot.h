@@ -30,10 +30,16 @@ typedef struct robotStateBITS {
             float angleRadianFromOdometry_1;
             float angleRadianFromOdometry;
             float timeFrom;
-            
-            char correcteursXPayload[24];
-            char correcteursThetaPayload[24];
+           
+            char correcteursXPayload[48];
+            char correcteursThetaPayload[48];
             char consignes[8];
+            
+            
+            float xCorrectionVitesse ;
+            float thetaCorrectionVitesse ;
+            float consigneVitesseLineaire ;
+            float consigneVitesseAngulaire ;
             
             PidCorrector PidX ;
             PidCorrector PidTheta ;
@@ -45,3 +51,4 @@ typedef struct robotStateBITS {
 
 extern volatile ROBOT_STATE_BITS robotState;
 #endif /* ROBOT_H */
+

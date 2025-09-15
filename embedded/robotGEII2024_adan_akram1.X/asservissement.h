@@ -28,10 +28,11 @@ extern "C" {
     } PidCorrector;
 
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax);
+void SendPidX(void);
+void SendPidTheta(void);
+void SendCommandeErreur(void);
+double Correcteur(volatile PidCorrector* PidCorr, double erreur);
 
-//void SendPidX(void);
-//void SendPidTheta(void);
-//void SendCommandeErreur(void);
 
 #endif	/* ASSERVISSEMENT_H */
 

@@ -8,9 +8,6 @@
 #include "robot.h"
 #include <xc.h>
 
-#define DISTROUES 0.217
-#define FREQ_ECH_QEI 250
-
 static float QeiDroitPosition_T_1 = 0.0;
 static float QeiDroitPosition = 0.0;
 static float QeiGauchePosition_T_1 = 0.0;

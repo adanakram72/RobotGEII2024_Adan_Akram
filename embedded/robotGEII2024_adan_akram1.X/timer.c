@@ -6,6 +6,9 @@
 #include "main.h"
 #include "QEI.h"
 #include "robot.h"
+#include "asservissement.h"
+#include "UART_Protocol.h"
+
 //Initialisation d?un timer 16 bits
 unsigned long timestamp;
 unsigned long tstop = 0;

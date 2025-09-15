@@ -63,15 +63,14 @@ int main(void) {
  
     
     
-//    SetupPidAsservissement(&robotState.PidX, 1.5, 1.5f, 0.0f,100.0f, 100.0f, 100.0f);
-//    SetupPidAsservissement(&robotState.PidTheta, 3.1f, 42.0f, 0.0f,100.0f, 100.0f, 100.0f);
-    
-    
     // BOUCLE PRINCIPALE
     while (1) {
-       
+       while (CB_RX1_IsDataAvailable()) {
+            UartDecodeMessage(CB_RX1_Get());  
+//            UartEncodeAndSendMessage(PidXConf, 48, robotState.correcteursXPayload);
+//            UartEncodeAndSendMessage(PidThetaConf, 48, robotState.correcteursThetaPayload);
+        }
     }
-   
     return 0;
 }
 

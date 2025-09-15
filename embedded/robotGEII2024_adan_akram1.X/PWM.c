@@ -5,6 +5,7 @@
 #include "ToolBox.h"
 #include "timer.h"
 #include "main.h"
+#include "QEI.h"
 
 
 #define PWMPER 24.0
@@ -85,3 +86,11 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, int MOTEUR) {
         robotState.vitesseGaucheConsigne = vitesseEnPourcents;
     }
 }
+
+//void PWMSetSpeedCommandePolaire(double vitesseLineaire, double vitesseAngulaire) {
+//    if (modeAuto == 0) {
+//        robotState.vitesseDroiteConsigne = -SPEED_TO_PERCENT * (vitesseLineaire + vitesseAngulaire*DISTROUES);
+//        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES); // divise distroues par 2 si problème !
+//        PWMUpdateSpeed();
+//    }
+//}

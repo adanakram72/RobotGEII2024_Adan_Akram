@@ -47,26 +47,6 @@
                  FontSize="10" />
             </GroupBox>
 
-            <!-- PID X compact -->
-            <GroupBox Header="PID X" BorderBrush="DarkGreen" Margin="5" FontSize="10">
-                <TextBox x:Name="TextBoxPidX"
-                 Height="20"
-                 FontSize="10"
-                 Padding="2"
-                 VerticalContentAlignment="Center"
-                 ToolTip="Kp Ki Kd Pmax Imax Dmax (ex: 1.0 0.1 0.5 100 50 25)" />
-            </GroupBox>
-
-            <!-- PID Theta compact -->
-            <GroupBox Header="PID Θ" BorderBrush="DarkBlue" Margin="5" FontSize="10">
-                <TextBox x:Name="TextBoxPidTheta"
-                 Height="20"
-                 FontSize="10"
-                 Padding="2"
-                 VerticalContentAlignment="Center"
-                 ToolTip="Kp Ki Kd Pmax Imax Dmax (ex: 1.0 0.1 0.5 100 50 25)" />
-            </GroupBox>
-
         </StackPanel>
 
 
@@ -77,7 +57,8 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Width="80">
             <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Height="40" Background="WhiteSmoke"/>
             <Button x:Name="buttonTest" Content="Test" Margin="5" Click="ButtonTest_Click" Background="WhiteSmoke" Height="40" />
-            <Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Height="40"  />
+			<Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Height="40"  />
+			<Button x:Name="buttonSetUpPid" Content="Set-Up PID" Margin="5" Height="40" Click="buttonSetUpPid_Click"  />
         </StackPanel>
 
         <GroupBox Header="Moteur" Grid.Column="0" Grid.Row="1" BorderBrush="ForestGreen" Width="160">
