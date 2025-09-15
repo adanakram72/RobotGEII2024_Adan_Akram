@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ExtendedSerialPort\ExtendedSerialPort.csproj" />
     <ProjectReference Include="..\Robot\Robot.csproj" />
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
     <ProjectReference Include="..\WpfAsservissementDisplay\WpfAsservissementDisplay.csproj" />
     <ProjectReference Include="..\WpfOscilloscope\WpfOscilloscopeControl.csproj" />
     <ProjectReference Include="..\WpfWorldMap\WpfWorldMap.csproj" />

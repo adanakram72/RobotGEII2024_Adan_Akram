@@ -46,6 +46,7 @@
       <itemPath>UART_Protocol.c</itemPath>
       <itemPath>QEI.c</itemPath>
       <itemPath>Utilities.c</itemPath>
+      <itemPath>asservissement.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

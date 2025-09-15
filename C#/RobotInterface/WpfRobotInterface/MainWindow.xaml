@@ -30,14 +30,45 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.ColumnSpan="1" VerticalAlignment="Center">
-            <GroupBox Header="Emission" BorderBrush="#FF123950" Margin="7,7,7,7">
-                <TextBox x:Name="textboxEmission" KeyUp="TextBoxEmission_KeyUp" Height="100" TextChanged="textboxEmission_TextChanged"></TextBox>
+        <StackPanel Grid.ColumnSpan="1" VerticalAlignment="Center" Margin="5">
+
+            <GroupBox Header="Emission" BorderBrush="#FF123950" Margin="5">
+                <TextBox x:Name="textboxEmission"
+                 KeyUp="TextBoxEmission_KeyUp"
+                 Height="60"
+                 FontSize="10"
+                 TextChanged="textboxEmission_TextChanged" />
             </GroupBox>
-            <GroupBox Header="Reception" BorderBrush="SlateGray" Margin="7,7,7,7">
-                <TextBox x:Name="textboxReception" AcceptsReturn="True" Height="100"></TextBox>
+
+            <GroupBox Header="Reception" BorderBrush="SlateGray" Margin="5">
+                <TextBox x:Name="textboxReception"
+                 AcceptsReturn="True"
+                 Height="60"
+                 FontSize="10" />
             </GroupBox>
+
+            <!-- PID X compact -->
+            <GroupBox Header="PID X" BorderBrush="DarkGreen" Margin="5" FontSize="10">
+                <TextBox x:Name="TextBoxPidX"
+                 Height="20"
+                 FontSize="10"
+                 Padding="2"
+                 VerticalContentAlignment="Center"
+                 ToolTip="Kp Ki Kd Pmax Imax Dmax (ex: 1.0 0.1 0.5 100 50 25)" />
+            </GroupBox>
+
+            <!-- PID Theta compact -->
+            <GroupBox Header="PID Θ" BorderBrush="DarkBlue" Margin="5" FontSize="10">
+                <TextBox x:Name="TextBoxPidTheta"
+                 Height="20"
+                 FontSize="10"
+                 Padding="2"
+                 VerticalContentAlignment="Center"
+                 ToolTip="Kp Ki Kd Pmax Imax Dmax (ex: 1.0 0.1 0.5 100 50 25)" />
+            </GroupBox>
+
         </StackPanel>
+
 
         <oscillo:WpfOscilloscope x:Name="oscilloSpeed" Grid.Row="0" Grid.Column="2" Loaded="oscilloSpeed_Loaded" Margin="10,10,10,10"/>
 

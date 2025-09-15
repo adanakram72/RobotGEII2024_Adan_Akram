@@ -12,7 +12,7 @@
 
 void EnvoieDistanceTelemetre() {
     unsigned char payload[10];
-    int val_ExG = (int) robotState.distanceTelemetreExGauche;
+   // int val_ExG = (int) robotState.distanceTelemetreExGauche;
     payload[0] = (unsigned char) ((int) robotState.distanceTelemetreExGauche);
     payload[1] = (unsigned char) (((int) robotState.distanceTelemetreExGauche) >> 8);
     payload[2] = (unsigned char) ((int) robotState.distanceTelemetreGauche);

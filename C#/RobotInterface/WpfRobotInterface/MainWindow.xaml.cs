@@ -1,4 +1,5 @@
-﻿using System.IO.Ports;
+﻿using System.Globalization;
+using System.IO.Ports;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
@@ -33,15 +34,15 @@ namespace WpfRobotInterface
             serialPort1 = new ExtendedSerialPort("COM4", 115200, Parity.None, 8, StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
-            
+
             // Setting timer
             timerAffichage = new DispatcherTimer();
             timerAffichage.Interval = new TimeSpan(0, 0, 0, 0, 50);
-            timerAffichage.Tick += TimerAffichage_Tick; 
+            timerAffichage.Tick += TimerAffichage_Tick;
             timerAffichage.Start();
 
             // Setting oscillo 
-    
+
             oscilloSpeed.isDisplayActivated = true;
             oscilloSpeed.AddOrUpdateLine(1, 200, "Vitesse Lineaire");
             oscilloSpeed.ChangeLineColor(1, Colors.Blue);
@@ -53,11 +54,11 @@ namespace WpfRobotInterface
         {
             asservSpeedDisplay.UpdateIndependantOdometry(robot.positionMD, robot.positionMG);
             asservSpeedDisplay.UpdatePolarOdometry(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
-            asservSpeedDisplay.UpdatePolarCommandValues(robot.correcteurKd,robot.correcteurKp)
-            worldMap.UpdatePosRobot(robot.positionXOdo*100+50, robot.positionYOdo*100+50);
+            //asservSpeedDisplay.UpdatePolarCommandValues(robot.correcteurKd, robot.correcteurKp);
+            //worldMap.UpdatePosRobot(robot.positionXOdo * 100 + 50, robot.positionYOdo * 100 + 50);
             oscilloSpeed.AddPointToLine(1, robot.timeFrom, robot.vitesseAngFOdo);
             oscilloSpeed.AddPointToLine(2, robot.timeFrom, robot.vitesseLinFOdo);
-            while (robot.byteListReceived.Count>0)
+            while (robot.byteListReceived.Count > 0)
             {
                 byte messageR = robot.byteListReceived.Dequeue();
                 DecodeMessage(messageR);
@@ -121,44 +122,48 @@ namespace WpfRobotInterface
 
         private void SendPIDValues()
         {
-            // --- PID X ---
-            float KpX = float.Parse(TextBoxKpX.Text);     // TextBox pour Kp X
-            float KiX = float.Parse(TextBoxKiX.Text);     // TextBox pour Ki X
-            float KdX = float.Parse(TextBoxKdX.Text);     // TextBox pour Kd X
-            float limitPX = float.Parse(TextBoxPmaxX.Text);
-            float limitIX = float.Parse(TextBoxImaxX.Text);
-            float limitDX = float.Parse(TextBoxDmaxX.Text);
+            string[] pidXValues = TextBoxPidX.Text.Split(new[] { ' ', ':', ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (pidXValues.Length == 6)
+            {
+                float KpX = float.Parse(pidXValues[0], CultureInfo.InvariantCulture);
+                float KiX = float.Parse(pidXValues[1], CultureInfo.InvariantCulture);
+                float KdX = float.Parse(pidXValues[2], CultureInfo.InvariantCulture);
+                float limitPX = float.Parse(pidXValues[3], CultureInfo.InvariantCulture);
+                float limitIX = float.Parse(pidXValues[4], CultureInfo.InvariantCulture);
+                float limitDX = float.Parse(pidXValues[5], CultureInfo.InvariantCulture);
 
-            byte[] pidXPayload = new byte[24];
-            BitConverter.GetBytes(KpX).CopyTo(pidXPayload, 0);
-            BitConverter.GetBytes(KdX).CopyTo(pidXPayload, 4);
-            BitConverter.GetBytes(KiX).CopyTo(pidXPayload, 8);
-            BitConverter.GetBytes(limitPX).CopyTo(pidXPayload, 12);
-            BitConverter.GetBytes(limitIX).CopyTo(pidXPayload, 16);
-            BitConverter.GetBytes(limitDX).CopyTo(pidXPayload, 20);
+                byte[] pidXPayload = new byte[24];
+                BitConverter.GetBytes(KpX).CopyTo(pidXPayload, 0);
+                BitConverter.GetBytes(KdX).CopyTo(pidXPayload, 4);
+                BitConverter.GetBytes(KiX).CopyTo(pidXPayload, 8);
+                BitConverter.GetBytes(limitPX).CopyTo(pidXPayload, 12);
+                BitConverter.GetBytes(limitIX).CopyTo(pidXPayload, 16);
+                BitConverter.GetBytes(limitDX).CopyTo(pidXPayload, 20);
 
-            UartEncodeAndSendMessage(0x0091, pidXPayload.Length, pidXPayload);
+                UartEncodeAndSendMessage(0x0091, pidXPayload.Length, pidXPayload);
+            }
 
-            // --- PID Theta ---
-            float KpTheta = float.Parse(TextBoxKpTheta.Text);
-            float KiTheta = float.Parse(TextBoxKiTheta.Text);
-            float KdTheta = float.Parse(TextBoxKdTheta.Text);
-            float limitPTheta = float.Parse(TextBoxPmaxTheta.Text);
-            float limitITheta = float.Parse(TextBoxImaxTheta.Text);
-            float limitDTheta = float.Parse(TextBoxDmaxTheta.Text);
+            string[] pidThetaValues = TextBoxPidTheta.Text.Split(new[] { ' ', ':', ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (pidThetaValues.Length == 6)
+            {
+                float KpTheta = float.Parse(pidThetaValues[0], CultureInfo.InvariantCulture);
+                float KiTheta = float.Parse(pidThetaValues[1], CultureInfo.InvariantCulture);
+                float KdTheta = float.Parse(pidThetaValues[2], CultureInfo.InvariantCulture);
+                float limitPTheta = float.Parse(pidThetaValues[3], CultureInfo.InvariantCulture);
+                float limitITheta = float.Parse(pidThetaValues[4], CultureInfo.InvariantCulture);
+                float limitDTheta = float.Parse(pidThetaValues[5], CultureInfo.InvariantCulture);
 
-            byte[] pidThetaPayload = new byte[24];
-            BitConverter.GetBytes(KpTheta).CopyTo(pidThetaPayload, 0);
-            BitConverter.GetBytes(KdTheta).CopyTo(pidThetaPayload, 4);
-            BitConverter.GetBytes(KiTheta).CopyTo(pidThetaPayload, 8);
-            BitConverter.GetBytes(limitPTheta).CopyTo(pidThetaPayload, 12);
-            BitConverter.GetBytes(limitITheta).CopyTo(pidThetaPayload, 16);
-            BitConverter.GetBytes(limitDTheta).CopyTo(pidThetaPayload, 20);
+                byte[] pidThetaPayload = new byte[24];
+                BitConverter.GetBytes(KpTheta).CopyTo(pidThetaPayload, 0);
+                BitConverter.GetBytes(KdTheta).CopyTo(pidThetaPayload, 4);
+                BitConverter.GetBytes(KiTheta).CopyTo(pidThetaPayload, 8);
+                BitConverter.GetBytes(limitPTheta).CopyTo(pidThetaPayload, 12);
+                BitConverter.GetBytes(limitITheta).CopyTo(pidThetaPayload, 16);
+                BitConverter.GetBytes(limitDTheta).CopyTo(pidThetaPayload, 20);
 
-            UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
+                UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
+            }
         }
-
-
 
         void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
         {
@@ -378,7 +383,7 @@ namespace WpfRobotInterface
                     robot.angleRadFOdo = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLinFOdo = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngFOdo = BitConverter.ToSingle(msgPayload, 20);
-                    robot.timeFrom = BitConverter.ToSingle(msgPayload, 24)/1000;
+                    robot.timeFrom = BitConverter.ToSingle(msgPayload, 24) / 1000;
                     robot.positionMD = BitConverter.ToSingle(msgPayload, 28);
                     robot.positionMG = BitConverter.ToSingle(msgPayload, 32);
 
@@ -392,37 +397,32 @@ namespace WpfRobotInterface
 
                     break;
 
-                case 0x0091: // pid x
-                    robot.correcteurKp = BitConverter.ToSingle(msgPayload, 0);
-                    robot.correcteurKd = BitConverter.ToSingle(msgPayload, 4);
-                    robot.correcteurKi = BitConverter.ToSingle(msgPayload, 8);
-                    robot.corrPmaxX = BitConverter.ToSingle(msgPayload, 12);
-                    robot.corrImaxX = BitConverter.ToSingle(msgPayload, 16);
-                    robot.corrDmaxX = BitConverter.ToSingle(msgPayload, 20);
-            
-                    ValKpX.Content = robot.correcteurKp.ToString("F2");
-                    ValKiX.Content = robot.correcteurKi.ToString("F2");
-                    ValKdX.Content = robot.correcteurKd.ToString("F2");
-                    ValPmaxX.Content = robot.corrPmaxX.ToString("F2");
-                    ValImaxX.Content = robot.corrImaxX.ToString("F2");
-                    ValDmaxX.Content = robot.corrDmaxX.ToString("F2");
-                    break;
+                //case 0x0091: // pid x
+                //    robot.correcteurKp = BitConverter.ToSingle(msgPayload, 0);
+                //    robot.correcteurKd = BitConverter.ToSingle(msgPayload, 4);
+                //    robot.correcteurKi = BitConverter.ToSingle(msgPayload, 8);
+                //    robot.corrPmaxX = BitConverter.ToSingle(msgPayload, 12);
+                //    robot.corrImaxX = BitConverter.ToSingle(msgPayload, 16);
+                //    robot.corrDmaxX = BitConverter.ToSingle(msgPayload, 20);
 
-                case 0x0092: //theta
-                    robot.correcteurThetaKp = BitConverter.ToSingle(msgPayload, 0);
-                    robot.correcteurThetaKd = BitConverter.ToSingle(msgPayload, 4);
-                    robot.correcteurThetaKi = BitConverter.ToSingle(msgPayload, 8);
-                    robot.corrPmaxTheta = BitConverter.ToSingle(msgPayload, 12);
-                    robot.corrImaxTheta = BitConverter.ToSingle(msgPayload, 16);
-                    robot.corrDmaxTheta = BitConverter.ToSingle(msgPayload, 20);
+                //    myAsservissementDisplayControl.UpdatePolarCorrectionGains(robot.correcteurKp, 0,     robot.correcteurKi, 0,      robot.correcteurKd, 0);
 
-                    ValKpTheta.Content = robot.correcteurThetaKp.ToString("F2");
-                    ValKiTheta.Content = robot.correcteurThetaKi.ToString("F2");
-                    ValKdTheta.Content = robot.correcteurThetaKd.ToString("F2");
-                    ValPmaxTheta.Content = robot.corrPmaxTheta.ToString("F2");
-                    ValImaxTheta.Content = robot.corrImaxTheta.ToString("F2");
-                    ValDmaxTheta.Content = robot.corrDmaxTheta.ToString("F2");
-                    break;
+                //    myAsservissementDisplayControl.UpdatePolarCorrectionMax(robot.corrPmaxX, 0,   robot.corrImaxX, 0,   robot.corrDmaxX, 0);
+
+                //    break;
+
+                //case 0x0092: // theta
+                //    robot.correcteurThetaKp = BitConverter.ToSingle(msgPayload, 0);
+                //    robot.correcteurThetaKd = BitConverter.ToSingle(msgPayload, 4);
+                //    robot.correcteurThetaKi = BitConverter.ToSingle(msgPayload, 8);
+                //    robot.corrPmaxTheta = BitConverter.ToSingle(msgPayload, 12);
+                //    robot.corrImaxTheta = BitConverter.ToSingle(msgPayload, 16);
+                //    robot.corrDmaxTheta = BitConverter.ToSingle(msgPayload, 20);
+
+                //    myAsservissementDisplayControl.UpdatePolarCorrectionGains(0, robot.correcteurThetaKp, 0, robot.correcteurThetaKi, 0, robot.correcteurThetaKd);
+                //    myAsservissementDisplayControl.UpdatePolarCorrectionMax(0, robot.corrPmaxTheta,   0, robot.corrImaxTheta,    0, robot.corrDmaxTheta);
+
+                //    break;
 
                 case 0x0030:
                     byte[] value = new byte[2];
@@ -441,6 +441,7 @@ namespace WpfRobotInterface
 
                     Buffer.BlockCopy(msgPayload, 8, value, 0, 2);
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
+                    break;
                 default:
                     break;
             }

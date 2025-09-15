@@ -69,9 +69,7 @@ int main(void) {
     
     // BOUCLE PRINCIPALE
     while (1) {
-        
-    
-    
+       
     }
    
     return 0;
