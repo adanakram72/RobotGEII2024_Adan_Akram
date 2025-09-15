@@ -31,8 +31,8 @@ typedef struct robotStateBITS {
             float angleRadianFromOdometry;
             float timeFrom;
            
-            char correcteursXPayload[48];
-            char correcteursThetaPayload[48];
+            char correcteursXPayload[60];
+            char correcteursThetaPayload[60];
             char consignes[8];
             
             

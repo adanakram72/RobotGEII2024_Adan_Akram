@@ -55,7 +55,7 @@ namespace WpfRobotInterface
             //tableau asservissement affichage
             asservSpeedDisplay.UpdateIndependantOdometry(robot.positionMD, robot.positionMG);
             asservSpeedDisplay.UpdatePolarOdometry(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
-            //asservSpeedDisplay.UpdatePolarCorrectionGains(robot.KpX, robot.KpTheta, robot.KiX, robot.KiTheta, robot.KdX, robot.KdTheta);
+            asservSpeedDisplay.UpdatePolarCorrectionGains(robot.KpX, robot.KpTheta, robot.KiX, robot.KiTheta, robot.KdX, robot.KdTheta);
             asservSpeedDisplay.UpdatePolarCorrectionLimits(robot.corrLimitPX, robot.corrLimitPTheta, robot.corrLimitIX, robot.corrLimitITheta, robot.corrLimitDX, robot.corrLimitDTheta);
             if (asservSpeedDisplay != null)
             {
@@ -68,6 +68,7 @@ namespace WpfRobotInterface
                     robot.corrDTheta
                 );
             }
+            asservSpeedDisplay.UpdatePolarErrorValues(robot.vitesseLinFOdo-robot.consigneX, robot.vitesseAngFOdo - robot.consigneTheta);
 
 
             //map affichage
@@ -382,8 +383,9 @@ namespace WpfRobotInterface
                     robot.erreurIX = BitConverter.ToSingle(msgPayload, 36);
                     robot.corrDX = BitConverter.ToSingle(msgPayload, 40);
                     robot.erreurDX = BitConverter.ToSingle(msgPayload, 44);
-
-                    asservSpeedDisplay.UpdatePolarCorrectionGains(robot.KpX, robot.KpTheta, robot.KiX, robot.KiTheta, robot.KdX, robot.KdTheta);
+                    robot.erreurX = BitConverter.ToSingle(msgPayload, 48);     
+                    robot.consigneX = BitConverter.ToSingle(msgPayload, 52); 
+                    robot.vitesseX = BitConverter.ToSingle(msgPayload, 56);
 
                     break;
 
@@ -400,6 +402,10 @@ namespace WpfRobotInterface
                     robot.erreurITheta = BitConverter.ToSingle(msgPayload, 36);
                     robot.corrDTheta = BitConverter.ToSingle(msgPayload, 40);
                     robot.erreurDTheta = BitConverter.ToSingle(msgPayload, 44);
+                    robot.erreurTheta = BitConverter.ToSingle(msgPayload, 48);     
+                    robot.consigneTheta = BitConverter.ToSingle(msgPayload, 52);   
+                    robot.vitesseTheta = BitConverter.ToSingle(msgPayload, 56); 
+
                     break;
 
 
@@ -477,12 +483,12 @@ namespace WpfRobotInterface
 
         private void buttonSetUpPid_Click(object sender, RoutedEventArgs e)
         {
-            float KpTheta = 1.0f;
-            float KiTheta = 2.2f;
-            float KdTheta = 3.3f;
-            float limitPTheta = 4.4f;
-            float limitITheta = 5;
-            float limitDTheta = 6;
+            float KpTheta = 7f;
+            float KiTheta = 10f;
+            float KdTheta = 8f;
+            float limitPTheta = 9;
+            float limitITheta = 8.3f;
+            float limitDTheta = 6.4f;
 
             byte[] pidThetaPayload = new byte[24];
             BitConverter.GetBytes(KpTheta).CopyTo(pidThetaPayload, 0);
@@ -495,12 +501,12 @@ namespace WpfRobotInterface
             UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
 
 
-            float KpX = 1.92f;
-            float KiX = 1.29f;
-            float KdX = 1.3f;
-            float limitPX = 1.4f;
-            float limitIX = 1.5f;
-            float limitDX = 1.6f;
+            float KpX = 9;
+            float KiX = 8.6f;
+            float KdX = 7.5f;
+            float limitPX = 6.8f;
+            float limitIX = 7.2f;
+            float limitDX = 9.1f;
 
             byte[] pidXPayload = new byte[24];
             BitConverter.GetBytes(KpX).CopyTo(pidXPayload, 0); 

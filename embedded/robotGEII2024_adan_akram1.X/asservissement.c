@@ -1,4 +1,3 @@
-
 #include "asservissement.h"
 #include "QEI.h"
 #include "timer.h"
@@ -9,6 +8,7 @@
 #include "Utilities.h"
 #include "robot.h"
 #include <xc.h>
+#include "PWM.h"
 
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
     PidCorr->Kp = Kp;
@@ -39,37 +39,16 @@ double Correcteur(volatile PidCorrector* PidCorr, double erreur) {
 }
 
 
-//void UpdateAsservissement() {
-//    robotState.PidX.erreur = robotState.consigneVitesseLineaire - robotState.vitesseLineaireFromOdometry;
-//    robotState.PidTheta.erreur = robotState.consigneVitesseAngulaire - robotState.vitesseAngulaireFromOdometry;
-//    robotState.xCorrectionVitesse = Correcteur(&robotState.PidX, robotState.PidX.erreur);
-//    robotState.thetaCorrectionVitesse = Correcteur(&robotState.PidTheta, robotState.PidTheta.erreur);
-//    PWMSetSpeedConsignePolaire(robotState.xCorrectionVitesse, robotState.thetaCorrectionVitesse);
-//}
+void UpdateAsservissement() {
+    robotState.PidX.erreur = robotState.consigneVitesseLineaire - robotState.vitesseLineaireFromOdometry;
+    robotState.PidTheta.erreur = robotState.consigneVitesseAngulaire - robotState.vitesseAngulaireFromOdometry;
+    robotState.xCorrectionVitesse = Correcteur(&robotState.PidX, robotState.PidX.erreur);
+    robotState.thetaCorrectionVitesse = Correcteur(&robotState.PidTheta, robotState.PidTheta.erreur);
+    PWMSetSpeedConsignePolaire(robotState.xCorrectionVitesse, robotState.thetaCorrectionVitesse);
+}
 
 
-//void SendPidX() {
-//    getBytesFromFloat((unsigned char*)asservissementXPayload, 0, (float) (robotState.PidX.corrP));
-//    getBytesFromFloat((unsigned char*)asservissementXPayload, 4, (float) (robotState.PidX.erreurProportionelleMax));
-//    getBytesFromFloat((unsigned char*)asservissementXPayload, 8, (float) (robotState.PidX.corrI));
-//    getBytesFromFloat((unsigned char*)asservissementXPayload, 12, (float) (robotState.PidX.erreurIntegraleMax));
-//    getBytesFromFloat((unsigned char*)asservissementXPayload, 16, (float) (robotState.PidX.corrD));
-//    getBytesFromFloat((unsigned char*)asservissementXPayload, 20, (float) (robotState.PidX.erreurDeriveeMax));
-//    UartEncodeAndSendMessage(CorrX, 24, (unsigned char*)asservissementXPayload);        
-//}
-//
-//void SendPidTheta() {
-//    unsigned char asservissementThetaPayload[24];
-//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 0, (float) (robotState.PidTheta.corrP));
-//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 4, (float) (robotState.PidTheta.erreurProportionelleMax));
-//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 8, (float) (robotState.PidTheta.corrI));
-//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 12, (float) (robotState.PidTheta.erreurIntegraleMax));
-//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 16, (float) (robotState.PidTheta.corrD));
-//    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 20, (float) (robotState.PidTheta.erreurDeriveeMax));
-//    
-//    UartEncodeAndSendMessage(CorrTheta, 24, (unsigned char*)asservissementThetaPayload);
-//}
-//
+
 //void SendCommandeErreur() {
 //    unsigned char CommandeErreurPayload[16];
 //    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.xCorrectionVitesse));

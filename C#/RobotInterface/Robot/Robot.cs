@@ -43,7 +43,12 @@ namespace Robot_NS
         public float corrDTheta;
         public float erreurDTheta;
 
-
+        public float erreurX;
+        public float consigneX;
+        public float vitesseX;
+        public float erreurTheta;
+        public float consigneTheta;
+        public float vitesseTheta;
 
         public Robot()
         {

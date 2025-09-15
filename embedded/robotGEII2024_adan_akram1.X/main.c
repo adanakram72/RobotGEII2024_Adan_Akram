@@ -66,9 +66,7 @@ int main(void) {
     // BOUCLE PRINCIPALE
     while (1) {
        while (CB_RX1_IsDataAvailable()) {
-            UartDecodeMessage(CB_RX1_Get());  
-//            UartEncodeAndSendMessage(PidXConf, 48, robotState.correcteursXPayload);
-//            UartEncodeAndSendMessage(PidThetaConf, 48, robotState.correcteursThetaPayload);
+            UartDecodeMessage(CB_RX1_Get());
         }
     }
     return 0;

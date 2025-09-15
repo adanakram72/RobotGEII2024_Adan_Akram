@@ -9,6 +9,9 @@
 
 
 #define PWMPER 24.0
+#define SPEED_TO_PERCENT 40
+float acceleration = 5;
+int modeAuto = 0;
 
 void InitPWM(void) {
     PTCON2bits.PCLKDIV = 0b000; //Divide by 1
@@ -38,7 +41,6 @@ double talon = 50;
     }
 }*/
 
-float acceleration = 20 ;
 
 void PWMUpdateSpeed() {
     // Cette fonction est appelee sur timer et permet de suivre des rampes d acceleration
@@ -87,10 +89,10 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, int MOTEUR) {
     }
 }
 
-//void PWMSetSpeedCommandePolaire(double vitesseLineaire, double vitesseAngulaire) {
-//    if (modeAuto == 0) {
-//        robotState.vitesseDroiteConsigne = -SPEED_TO_PERCENT * (vitesseLineaire + vitesseAngulaire*DISTROUES);
-//        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES); // divise distroues par 2 si problème !
-//        PWMUpdateSpeed();
-//    }
-//}
+void PWMSetSpeedConsignePolaire(double vitesseLineaire, double vitesseAngulaire) {
+    if (modeAuto == 0) {
+        robotState.vitesseDroiteConsigne = -SPEED_TO_PERCENT * (vitesseLineaire + vitesseAngulaire*DISTROUES);
+        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES); // divise distroues par 2 si problème !
+        PWMUpdateSpeed();
+    }
+}
