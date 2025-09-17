@@ -31,6 +31,7 @@ void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki
 void SendPidX(void);
 void SendPidTheta(void);
 void SendCommandeErreur(void);
+void UpdateAsservissement();
 double Correcteur(volatile PidCorrector* PidCorr, double erreur);
 
 

@@ -7,13 +7,14 @@
 #include "Utilities.h"
 #include "robot.h"
 #include <xc.h>
+#include "asservissement.h"
 
-static float QeiDroitPosition_T_1 = 0.0;
-static float QeiDroitPosition = 0.0;
-static float QeiGauchePosition_T_1 = 0.0;
-static float QeiGauchePosition = 0.0;
-static float delta_d = 0.0;
-static float delta_g = 0.0;
+static float QeiDroitPosition_T_1;
+static float QeiDroitPosition;
+static float QeiGauchePosition_T_1;
+static float QeiGauchePosition;
+static float delta_d;
+static float delta_g;
 
 void InitQEI1() {
     QEI1IOCbits.SWPAB = 1; //QEAx and QEBx are swapped
@@ -53,7 +54,7 @@ void QEIUpdateData() {
     robotState.vitesseGaucheFromOdometry = delta_g*FREQ_ECH_QEI;
     robotState.vitesseLineaireFromOdometry = (robotState.vitesseDroitFromOdometry + robotState.vitesseGaucheFromOdometry) / 2.0;
     robotState.vitesseAngulaireFromOdometry = (robotState.vitesseDroitFromOdometry - robotState.vitesseGaucheFromOdometry) / DISTROUES;
-
+       
     //Mise a jour du positionnement terrain a t-1
 //    robotState.xPosFromOdometry_1 = robotState.xPosFromOdometry;
 //    robotState.yPosFromOdometry_1 = robotState.yPosFromOdometry;
@@ -67,6 +68,8 @@ void QEIUpdateData() {
         robotState.angleRadianFromOdometry -= 2 * PI;
     if (robotState.angleRadianFromOdometry < -PI)
         robotState.angleRadianFromOdometry += 2 * PI;
+    
+     UpdateAsservissement();
 }
 
 #define POSITION_DATA 0x0061
@@ -82,5 +85,6 @@ void SendPositionData() {
     getBytesFromFloat(positionPayload, 24, (float) (robotState.timeFrom));
     getBytesFromFloat(positionPayload, 28, (float) (robotState.vitesseDroitFromOdometry));
     getBytesFromFloat(positionPayload, 32, (float) (robotState.vitesseGaucheFromOdometry));
+
     UartEncodeAndSendMessage(POSITION_DATA, 36, positionPayload);
 }

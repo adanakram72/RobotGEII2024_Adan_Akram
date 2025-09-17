@@ -483,12 +483,12 @@ namespace WpfRobotInterface
 
         private void buttonSetUpPid_Click(object sender, RoutedEventArgs e)
         {
-            float KpTheta = 7f;
-            float KiTheta = 10f;
-            float KdTheta = 8f;
-            float limitPTheta = 9;
-            float limitITheta = 8.3f;
-            float limitDTheta = 6.4f;
+            float KpTheta = 0f;
+            float KiTheta = 0f;
+            float KdTheta = 0f;
+            float limitPTheta = 100f;
+            float limitITheta = 100f;
+            float limitDTheta = 100f;
 
             byte[] pidThetaPayload = new byte[24];
             BitConverter.GetBytes(KpTheta).CopyTo(pidThetaPayload, 0);
@@ -501,12 +501,12 @@ namespace WpfRobotInterface
             UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
 
 
-            float KpX = 9;
-            float KiX = 8.6f;
-            float KdX = 7.5f;
-            float limitPX = 6.8f;
-            float limitIX = 7.2f;
-            float limitDX = 9.1f;
+            float KpX = 2f;
+            float KiX = 0f;
+            float KdX = 0f;
+            float limitPX = 100f;
+            float limitIX = 100f;
+            float limitDX = 100f;
 
             byte[] pidXPayload = new byte[24];
             BitConverter.GetBytes(KpX).CopyTo(pidXPayload, 0); 

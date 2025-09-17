@@ -38,7 +38,6 @@ double Correcteur(volatile PidCorrector* PidCorr, double erreur) {
     return PidCorr->corrP + PidCorr->corrI + PidCorr->corrD;
 }
 
-
 void UpdateAsservissement() {
     robotState.PidX.erreur = robotState.consigneVitesseLineaire - robotState.vitesseLineaireFromOdometry;
     robotState.PidTheta.erreur = robotState.consigneVitesseAngulaire - robotState.vitesseAngulaireFromOdometry;
@@ -46,14 +45,3 @@ void UpdateAsservissement() {
     robotState.thetaCorrectionVitesse = Correcteur(&robotState.PidTheta, robotState.PidTheta.erreur);
     PWMSetSpeedConsignePolaire(robotState.xCorrectionVitesse, robotState.thetaCorrectionVitesse);
 }
-
-
-
-//void SendCommandeErreur() {
-//    unsigned char CommandeErreurPayload[16];
-//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.xCorrectionVitesse));
-//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 4, (float) (robotState.thetaCorrectionVitesse));
-//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 8, (float) (robotState.PidX.erreur));
-//    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 12, (float) (robotState.PidTheta.erreur));
-//    UartEncodeAndSendMessage(CmdErreur, 16, (unsigned char*)CommandeErreurPayload);
-//}

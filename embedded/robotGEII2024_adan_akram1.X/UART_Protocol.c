@@ -191,6 +191,7 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
             getBytesFromFloat(robotState.correcteursXPayload, 56, (float)robotState.vitesseLineaireFromOdometry);
 
             UartEncodeAndSendMessage(PidXConf, 60, robotState.correcteursXPayload);
+
             break;
 
         case PidThetaConf:
@@ -208,8 +209,6 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
                     (double) limitPTheta,
                     (double) limitITheta,
                     (double) limitDTheta);
-
-            Correcteur(&robotState.PidTheta, 1);
 
             getBytesFromFloat(robotState.correcteursThetaPayload, 0, correcteurThetaKp);
             getBytesFromFloat(robotState.correcteursThetaPayload, 4, correcteurThetaKi);
@@ -229,7 +228,8 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
             getBytesFromFloat(robotState.correcteursThetaPayload, 52, robotState.thetaCorrectionVitesse);
             getBytesFromFloat(robotState.correcteursThetaPayload, 56, robotState.vitesseAngulaireFromOdometry);
 
-            UartEncodeAndSendMessage(PidThetaConf, 60, robotState.correcteursThetaPayload);
+          UartEncodeAndSendMessage(PidThetaConf, 60, robotState.correcteursThetaPayload);
+
             break;
 
         default:

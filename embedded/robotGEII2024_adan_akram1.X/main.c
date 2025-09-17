@@ -73,8 +73,6 @@ int main(void) {
 }
 
 
-
-
 void Cap() {
     if (robotState.distanceTelemetreExDroite < 24) {
         LED_VERTE_1 = 1;

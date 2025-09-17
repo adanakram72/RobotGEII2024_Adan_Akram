@@ -31,7 +31,6 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     QEIUpdateData();
     robotState.timeFrom++;
     send_counter++;
-
     if (send_counter >= 25) {
         send_counter = 0;
         SendPositionData();
