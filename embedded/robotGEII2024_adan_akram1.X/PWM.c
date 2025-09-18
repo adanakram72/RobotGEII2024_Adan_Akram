@@ -93,7 +93,7 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, int MOTEUR) {
 void PWMSetSpeedConsignePolaire(double vitesseLineaire, double vitesseAngulaire) {
     if (modeAuto == 0) {
         robotState.vitesseDroiteConsigne = -SPEED_TO_PERCENT * (vitesseLineaire + vitesseAngulaire*DISTROUES/2);
-        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES/2); // divise distroues par 2 si problème !
+        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES/2); // divise distroues par 2 si problème !v
         PWMUpdateSpeed();
     }
 }

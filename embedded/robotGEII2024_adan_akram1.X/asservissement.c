@@ -4,7 +4,6 @@
 #include "IO.h"
 #include "UART_Protocol.h"
 #include "UART.h"
-#include <math.h>
 #include "Utilities.h"
 #include "robot.h"
 #include <xc.h>
@@ -23,15 +22,15 @@ void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki
 
 double Correcteur(volatile PidCorrector* PidCorr, double erreur) {
     PidCorr->erreur = erreur;
-    double erreurProportionnelle = LimitToInterval(erreur, -PidCorr->erreurProportionelleMax / PidCorr->Kp, PidCorr->erreurProportionelleMax / PidCorr->Kp);
+    double erreurProportionnelle = LimitToIntervalBis(erreur, -PidCorr->erreurProportionelleMax / PidCorr->Kp, PidCorr->erreurProportionelleMax / PidCorr->Kp);
     PidCorr->corrP = PidCorr->Kp * erreurProportionnelle;
 
     PidCorr->erreurIntegrale += erreur / FREQ_ECH_QEI;
-    PidCorr->erreurIntegrale = LimitToInterval(PidCorr->erreurIntegrale, -PidCorr->erreurIntegraleMax / PidCorr->Ki, PidCorr->erreurIntegraleMax / PidCorr->Ki);
+    PidCorr->erreurIntegrale = LimitToIntervalBis(PidCorr->erreurIntegrale, -PidCorr->erreurIntegraleMax / PidCorr->Ki, PidCorr->erreurIntegraleMax / PidCorr->Ki);
     PidCorr->corrI = PidCorr->Ki * PidCorr->erreurIntegrale;
 
     double erreurDerivee = (erreur - PidCorr->epsilon_1) * FREQ_ECH_QEI;
-    double deriveeBornee = LimitToInterval(erreurDerivee, -PidCorr->erreurDeriveeMax / PidCorr->Kd, PidCorr->erreurDeriveeMax / PidCorr->Kd);
+    double deriveeBornee = LimitToIntervalBis(erreurDerivee, -PidCorr->erreurDeriveeMax / PidCorr->Kd, PidCorr->erreurDeriveeMax / PidCorr->Kd);
     PidCorr->epsilon_1 = erreur;
     PidCorr->corrD = deriveeBornee * PidCorr->Kd;
 
@@ -44,4 +43,45 @@ void UpdateAsservissement() {
     robotState.xCorrectionVitesse = Correcteur(&robotState.PidX, robotState.PidX.erreur);
     robotState.thetaCorrectionVitesse = Correcteur(&robotState.PidTheta, robotState.PidTheta.erreur);
     PWMSetSpeedConsignePolaire(robotState.xCorrectionVitesse, robotState.thetaCorrectionVitesse);
+
+}
+
+void sendPidDonnees() {
+
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 0, robotState.PidX.erreur);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 4, robotState.xCorrectionVitesse);
+
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 8, robotState.PidX.Kp);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 12, robotState.PidX.corrP);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 16, robotState.PidX.erreurProportionelleMax);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 20, robotState.PidX.Ki);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 24, robotState.PidX.corrI);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 28, robotState.PidX.erreurIntegraleMax);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 32, robotState.PidX.Kd);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 36, robotState.PidX.corrD);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 40, robotState.PidX.erreurDeriveeMax);
+
+
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 44, robotState.PidTheta.erreur);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 48, robotState.thetaCorrectionVitesse);
+
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 52, robotState.PidTheta.Kp);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 56, robotState.PidTheta.corrP);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 60, robotState.PidTheta.erreurProportionelleMax);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 64, robotState.PidTheta.Ki);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 68, robotState.PidTheta.corrI);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 72, robotState.PidTheta.erreurIntegraleMax);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 76, robotState.PidTheta.Kd);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 80, robotState.PidTheta.corrD);
+    getBytesFromFloat(robotState.correcteursThetaXPayload, 84, robotState.PidTheta.erreurDeriveeMax);
+
+    UartEncodeAndSendMessage(PidThetaXConf, 88, robotState.correcteursThetaXPayload);
+}
+
+float LimitToIntervalBis(float value, float lowLimit, float highLimit) {
+    if (value > highLimit)
+        value = highLimit;
+    else if (value < lowLimit)
+        value = lowLimit;
+    return value;
 }

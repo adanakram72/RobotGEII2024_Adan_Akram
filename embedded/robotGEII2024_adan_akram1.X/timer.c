@@ -31,9 +31,11 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     QEIUpdateData();
     robotState.timeFrom++;
     send_counter++;
+
     if (send_counter >= 25) {
         send_counter = 0;
         SendPositionData();
+
     }
 }
 
@@ -55,7 +57,6 @@ void InitTimer23(void) {
 
 void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void) {
     IFS0bits.T3IF = 0;
-    PWMUpdateSpeed();
     // Clear Timer3 Interrupt Flag
     //    LED_ORANGE_1 = !LED_ORANGE_1;
     //    if (toggle == 0) {
@@ -124,5 +125,7 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     timestamp = timestamp + 1;
     tstop = tstop + 1;
     //    OperatingSystemLoop();
+    sendPidDonnees();
+
 
 }

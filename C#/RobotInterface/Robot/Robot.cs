@@ -15,6 +15,8 @@ namespace Robot_NS
         public float distanceTelemetreGauche;
         public float positionXOdo, positionYOdo, vitesseLinFOdo, vitesseAngFOdo, angleRadFOdo, timeFrom, positionMD, positionMG;
 
+
+        public float commandeX;
         public float KpX;
         public float KiX;
         public float KdX;
@@ -36,6 +38,7 @@ namespace Robot_NS
         public float corrDX;
         public float erreurDX;
 
+        public float commandeTheta;
         public float corrPTheta;
         public float erreurPTheta;
         public float corrITheta;

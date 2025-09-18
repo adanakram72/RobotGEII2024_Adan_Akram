@@ -15,6 +15,7 @@ void sendled();
 
 #define PidXConf 0x0091  //linéaire
 #define PidThetaConf 0x0092  //angulaire
+#define PidThetaXConf 0x0093
 
 
 typedef enum {
