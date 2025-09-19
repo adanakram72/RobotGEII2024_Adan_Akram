@@ -64,11 +64,13 @@ int main(void) {
     
     
     // BOUCLE PRINCIPALE
-    while (1) {
-       while (CB_RX1_IsDataAvailable()) {
-            UartDecodeMessage(CB_RX1_Get());
+    while(1) {
+        if(CB_RX1_IsDataAvailable()) {
+            unsigned char data = CB_RX1_Get();
+            UartDecodeMessage(data);
         }
     }
+
     return 0;
 }
 

@@ -59,17 +59,10 @@ namespace WpfRobotInterface
             asservSpeedDisplay.UpdatePolarCorrectionLimits(robot.corrLimitPX, robot.corrLimitPTheta, robot.corrLimitIX, robot.corrLimitITheta, robot.corrLimitDX, robot.corrLimitDTheta);
             asservSpeedDisplay.UpdatePolarErrorValues(robot.erreurX, robot.erreurTheta);
             asservSpeedDisplay.UpdatePolarCommandValues(robot.commandeX, robot.commandeTheta);
-
+            asservSpeedDisplay.UpdatePolarCorrectionValues(robot.corrPX, robot.corrPTheta, robot.corrIX, robot.corrITheta, robot.corrDX, robot.corrDTheta);
             if (asservSpeedDisplay != null)
             {
-                asservSpeedDisplay.UpdatePolarCorrectionValues(
-                    robot.corrPX,
-                    robot.corrPTheta,
-                    robot.corrIX,
-                    robot.corrITheta,
-                    robot.corrDX,
-                    robot.corrDTheta
-                );
+                
             }
 
             //map affichage
@@ -424,14 +417,14 @@ namespace WpfRobotInterface
             }
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            string messageStr = "Bonjour";
-            byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
-            int msgPayloadLength = msgPayload.Length;
-            int msgFunction = 0x0080;
-            UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
-        }
+        //private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    string messageStr = "Bonjour";
+        //    byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
+        //    int msgPayloadLength = msgPayload.Length;
+        //    int msgFunction = 0x0080;
+        //    UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
+        //}
 
         private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
         {
@@ -476,7 +469,7 @@ namespace WpfRobotInterface
         private void buttonSetUpPid_Click(object sender, RoutedEventArgs e)
         {
             float KpX = 2.0f;
-            float KiX = 22.0f;
+            float KiX = 100.0f;
             float KdX = 0f;
             float limitPX = 100f;
             float limitIX = 100f;
@@ -494,7 +487,7 @@ namespace WpfRobotInterface
 
 
             float KpTheta = 2f;
-            float KiTheta = 25.0f;
+            float KiTheta =100.0f;
             float KdTheta = 0f;
             float limitPTheta = 100f;
             float limitITheta = 100f;

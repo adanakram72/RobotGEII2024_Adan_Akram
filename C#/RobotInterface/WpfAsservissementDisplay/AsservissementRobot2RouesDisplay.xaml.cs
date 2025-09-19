@@ -14,7 +14,7 @@ namespace WpfAsservissementDisplay
     /// 
     public partial class AsservissementRobot2RouesDisplayControl : UserControl
     {
-        public bool isDisplayActivated = false;
+        public bool isDisplayActivated = true;
 
         int queueSize = 1;
         FixedSizedQueue<double> commandXList;
