@@ -6,6 +6,8 @@
 #include "timer.h"
 #include "main.h"
 #include "QEI.h"
+#include "main.h"
+
 
 
 #define PWMPER 24.0
