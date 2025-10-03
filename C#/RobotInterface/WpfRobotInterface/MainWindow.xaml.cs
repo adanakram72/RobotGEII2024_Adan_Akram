@@ -119,13 +119,6 @@ namespace WpfRobotInterface
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            //byte[] byteList = new byte[20];
-            //for (int i = 0; i < byteList.Length; i++)
-            //{
-            //    byteList[i] = (byte)(2 * i);
-            //}
-            //byteList[byteList.Length - 1] = (byte)'\n';
-            //serialPort1.Write(byteList, 0, byteList.Length);
             string messageStr = "Bonjour";
             byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
             int msgPayloadLength = msgPayload.Length;
@@ -365,7 +358,7 @@ namespace WpfRobotInterface
 
                     break;
 
-                case 0x0093: // pid x (paramètres PID)
+                case 0x0093:
                     robot.erreurX = BitConverter.ToSingle(msgPayload, 0);
                     robot.commandeX = BitConverter.ToSingle(msgPayload, 4);
                     robot.KpX = BitConverter.ToSingle(msgPayload, 8);
