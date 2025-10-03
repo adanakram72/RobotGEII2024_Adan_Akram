@@ -8,15 +8,87 @@
         xmlns:AsservDisplay="clr-namespace:WpfAsservissementDisplay;assembly=WpfAsservissementDisplay" 
         xmlns:map="clr-namespace:WpfWorldMap_NS;assembly=WpfWorldMap"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1000">
+        Title="MainWindow" Height="700" Width="1000" 
+        FontFamily="Segoe UI">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ResourcesWPF.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="ResourcesWPF.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Button style -->
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="#2D2D30"/>
+                <Setter Property="Foreground" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Padding" Value="8,4"/>
+                <Setter Property="BorderBrush" Value="#3E3E42"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#3E3E42"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#1F1F1F"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- TextBox style -->
+            <Style TargetType="TextBox">
+                <Setter Property="Background" Value="#1E1E1E"/>
+                <Setter Property="Foreground" Value="#DADADA"/>
+                <Setter Property="FontFamily" Value="Consolas"/>
+                <Setter Property="BorderBrush" Value="#3E3E42"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CaretBrush" Value="#FFFFFF"/>
+                <Setter Property="Padding" Value="4"/>
+            </Style>
+
+            <!-- Label style -->
+            <Style TargetType="Label">
+                <Setter Property="Foreground" Value="#CCCCCC"/>
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
+
+            <!-- GroupBox style -->
+            <Style TargetType="GroupBox">
+                <Setter Property="Foreground" Value="#FFFFFF"/>
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="BorderBrush" Value="#3E3E42"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+
+            <!-- StackPanel or Grid background -->
+            <Style TargetType="StackPanel">
+                <Setter Property="Background" Value="#252526"/>
+            </Style>
+
+            <Style TargetType="Grid">
+                <Setter Property="Background" Value="#252526"/>
+            </Style>
+
         </ResourceDictionary>
     </Window.Resources>
+
+
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -55,10 +127,12 @@
         <map:WpfWorldMap x:Name="worldMap" Grid.Row="0" Grid.Column="3" Loaded="worldMap_Loaded"/>
 
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Width="80">
-            <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Height="40" Background="WhiteSmoke"/>
-            <Button x:Name="buttonTest" Content="Test" Margin="5" Click="ButtonTest_Click" Background="WhiteSmoke" Height="40" />
-			<Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click" Height="40"  />
+            <Button x:Name="buttonSend" Content="Envoyer" Margin="5" Click="ButtonSend_Click" KeyUp="TextBoxEmission_KeyUp" Height="40"/>
+            <Button x:Name="buttonTest" Content="Test" Margin="5" Click="ButtonTest_Click" Height="40" />
+            <Button x:Name="buttonClear" Content="Effacer" Margin="5" Click="buttonClear_Click"  Height="40"  />
 			<Button x:Name="buttonSetUpPid" Content="Set-Up PID" Margin="5" Height="40" Click="buttonSetUpPid_Click"  />
+            <Button x:Name="buttonClearPid" Content="Clear PID" Margin="5" Height="40" Click="buttonClearPid_Click"  />
+            
         </StackPanel>
 
         <GroupBox Header="Moteur" Grid.Column="0" Grid.Row="1" BorderBrush="ForestGreen" Width="160">

@@ -53,6 +53,7 @@ namespace WpfRobotInterface
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
             //tableau asservissement affichage
+            worldMap.UpdatePosRobot(robot.positionXOdo * 100 + 50, robot.positionYOdo * 100 + 50, robot.angleRadFOdo * 180.0 / Math.PI);
             asservSpeedDisplay.UpdateIndependantOdometry(robot.positionMD, robot.positionMG);
             asservSpeedDisplay.UpdatePolarOdometry(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
             asservSpeedDisplay.UpdatePolarCorrectionGains(robot.KpX, robot.KpTheta, robot.KiX, robot.KiTheta, robot.KdX, robot.KdTheta);
@@ -66,7 +67,7 @@ namespace WpfRobotInterface
             }
 
             //map affichage
-            worldMap.UpdatePosRobot(robot.positionXOdo * 100 + 50, robot.positionYOdo * 100 + 50, 0);
+           
 
             //oscillo affichage
             oscilloSpeed.AddPointToLine(1, robot.timeFrom, robot.vitesseAngFOdo);
@@ -118,13 +119,13 @@ namespace WpfRobotInterface
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            byte[] byteList = new byte[20];
-            for (int i = 0; i < byteList.Length; i++)
-            {
-                byteList[i] = (byte)(2 * i);
-            }
-            byteList[byteList.Length - 1] = (byte)'\n';
-            serialPort1.Write(byteList, 0, byteList.Length);
+            //byte[] byteList = new byte[20];
+            //for (int i = 0; i < byteList.Length; i++)
+            //{
+            //    byteList[i] = (byte)(2 * i);
+            //}
+            //byteList[byteList.Length - 1] = (byte)'\n';
+            //serialPort1.Write(byteList, 0, byteList.Length);
             string messageStr = "Bonjour";
             byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
             int msgPayloadLength = msgPayload.Length;
@@ -508,5 +509,19 @@ namespace WpfRobotInterface
           
 
         }
+        private void buttonClearPid_Click(object sender, RoutedEventArgs e)
+        {
+            float zero = 0f;
+            byte[] pidXPayload = new byte[24];
+            for (int i = 0; i < 6; i++) BitConverter.GetBytes(zero).CopyTo(pidXPayload, i * 4);
+            UartEncodeAndSendMessage(0x0091, pidXPayload.Length, pidXPayload);
+
+            byte[] pidThetaPayload = new byte[24];
+            for (int i = 0; i < 6; i++) BitConverter.GetBytes(zero).CopyTo(pidThetaPayload, i * 4);
+            UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
+
+            MessageBox.Show("PID désactivé (valeurs mises à 0)", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
     }
 }

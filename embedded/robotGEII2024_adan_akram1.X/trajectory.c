@@ -100,13 +100,17 @@ void UpdateTrajectory(void) {
 
         if (ghostPosition.angularSpeed == 0 && Abs(thetaRestant) < 0.01) {
             ghostPosition.theta = thetaTarget;
-            current_state = (current_state != LASTROTATE) ? ADVANCING : IDLE;
+            if (current_state != LASTROTATE) {
+                current_state = ADVANCING;
+            } else {
+                current_state = IDLE;
+            }
         }
 
     } else if (current_state == ADVANCING) {
         if (distanceRestante != 0 && Modulo2PIAngleRadian(thetaRestant) < 0.01) {
             if (((distanceArret >= 0 && distanceRestante >= 0) || (distanceArret <= 0 && distanceRestante <= 0)) &&
-                Abs(distanceRestante) >= Abs(distanceArret)) {
+                    Abs(distanceRestante) >= Abs(distanceArret)) {
                 if (distanceRestante > 0) {
                     ghostPosition.linearSpeed = Min(ghostPosition.linearSpeed + linearAccel / FREQ_ECH_QEI, maxLinearSpeed);
                 } else {
@@ -147,12 +151,12 @@ void UpdateTrajectory(void) {
 void SendGhostData(void) {
     unsigned char ghostPayload[32];
     getBytesFromInt32(ghostPayload, 0, timestamp);
-    getBytesFromFloat(ghostPayload, 4, (float)ghostPosition.angleToTarget);
-    getBytesFromFloat(ghostPayload, 8, (float)ghostPosition.distanceToTarget);
-    getBytesFromFloat(ghostPayload, 12, (float)ghostPosition.theta);
-    getBytesFromFloat(ghostPayload, 16, (float)ghostPosition.angularSpeed);
-    getBytesFromFloat(ghostPayload, 20, (float)ghostPosition.x);
-    getBytesFromFloat(ghostPayload, 24, (float)ghostPosition.y);
-    getBytesFromFloat(ghostPayload, 28, (float)ghostPosition.linearSpeed);
+    getBytesFromFloat(ghostPayload, 4, (float) ghostPosition.angleToTarget);
+    getBytesFromFloat(ghostPayload, 8, (float) ghostPosition.distanceToTarget);
+    getBytesFromFloat(ghostPayload, 12, (float) ghostPosition.theta);
+    getBytesFromFloat(ghostPayload, 16, (float) ghostPosition.angularSpeed);
+    getBytesFromFloat(ghostPayload, 20, (float) ghostPosition.x);
+    getBytesFromFloat(ghostPayload, 24, (float) ghostPosition.y);
+    getBytesFromFloat(ghostPayload, 28, (float) ghostPosition.linearSpeed);
     UartEncodeAndSendMessage(GHOST_DATA, 32, ghostPayload);
 }

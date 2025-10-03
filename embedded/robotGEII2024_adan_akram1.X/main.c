@@ -1,6 +1,6 @@
 /* 
  * File:   main.c
- * Author: Table 9
+ * Author: e 9
  *
  * Created on 11 septembre 2024, 14:06
  */
@@ -58,14 +58,14 @@ int main(void) {
     InitPWM();
     InitADC1();
     InitUART();
-    InitQEI1();    
+    InitQEI1();
     InitQEI2();
- 
-    
-    
+
+
+
     // BOUCLE PRINCIPALE
-    while(1) {
-        if(CB_RX1_IsDataAvailable()) {
+    while (1) {
+        if (CB_RX1_IsDataAvailable()) {
             unsigned char data = CB_RX1_Get();
             UartDecodeMessage(data);
         }
@@ -73,7 +73,6 @@ int main(void) {
 
     return 0;
 }
-
 
 void Cap() {
     if (robotState.distanceTelemetreExDroite < 24) {

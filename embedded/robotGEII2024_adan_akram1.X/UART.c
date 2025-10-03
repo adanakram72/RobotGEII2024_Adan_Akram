@@ -22,6 +22,7 @@ void InitUART(void) {
     IEC0bits.U1RXIE = 1; //  UART Rx interrupt
     
     U1MODEbits.UARTEN = 1; // Enable UART
+    IPC2bits.U1RXIP = 7;
     U1STAbits.UTXEN = 1; // Enable UART Tx
 }
 
@@ -44,18 +45,7 @@ void InitUART(void) {
 //    U2MODEbits.UARTEN = 1; // Enable UART
 //    U2STAbits.UTXEN = 1; // Enable UART Tx
 //}
-/*void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void) {
-    IFS0bits.U1RXIF = 0; // clear RX interrupt flag 
-    if (U1STAbits.FERR == 1) {
-        U1STAbits.FERR = 0;
-    }
-    if (U1STAbits.OERR == 1) {
-        U1STAbits.OERR = 0;
-    }
-    while (U1STAbits.URXDA == 1) {
-        U1TXREG = U1RXREG;
-    }
-}*/
+
 
 void SendMessageDirect(unsigned char* message, int length) {
     unsigned char i = 0;
