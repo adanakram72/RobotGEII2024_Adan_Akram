@@ -5,6 +5,9 @@
 #include <math.h>
 #include "timer.h"
 #include "QEI.h"
+#include "trajectory.h"
+
+
 
 extern unsigned long timestamp;
 

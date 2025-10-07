@@ -44,6 +44,6 @@ void HandleIdleState(void);
 void HandleRotatingState(void);
 void HandleAdvancingState(void);
 double DistancePointToSegment(double px, double py, double ax, double ay, double bx, double by);
-void SetGhostTarget(double Click_x, Click_y);
+void SetGhostTarget(double Click_x,double Click_y);
 
 #endif // TRAJECTORY_H
