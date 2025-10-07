@@ -1,7 +1,7 @@
 #ifndef TRAJECTORY_H
 #define TRAJECTORY_H
 
-#include "math.h"
+#include <math.h>
 
 #define GHOST_DATA             0x0010
 #define MAX_LINEAR_SPEED       1.0
@@ -38,6 +38,12 @@ extern volatile GhostPosition ghostPosition;
 void InitTrajectoryGenerator(void);
 void UpdateTrajectory(void);
 void SendGhostData(void);
-void rotationTarget(double currentTime);
+//void rotationTarget(double currentTime);
+
+void HandleIdleState(void);
+void HandleRotatingState(void);
+void HandleAdvancingState(void);
+double DistancePointToSegment(double px, double py, double ax, double ay, double bx, double by);
+void SetGhostTarget(double Click_x, Click_y);
 
 #endif // TRAJECTORY_H

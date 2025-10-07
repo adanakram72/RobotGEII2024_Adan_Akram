@@ -406,38 +406,27 @@ namespace WpfRobotInterface
                     Buffer.BlockCopy(msgPayload, 8, value, 0, 2);
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
                     break;
+                case 0x0010:
+                    robot.timestamp = BitConverter.ToUInt32(msgPayload, 0);
+                    robot.angleToTarget = BitConverter.ToSingle(msgPayload, 4);
+                    robot.distanceToTarget = BitConverter.ToSingle(msgPayload, 8);
+                    robot.theta = BitConverter.ToSingle(msgPayload, 12);
+                    robot.angularSpeed = BitConverter.ToSingle(msgPayload, 16);
+                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 20);
+                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 24);
+                    robot.linearSpeed = BitConverter.ToSingle(msgPayload, 28);
+
+                    ValAngleToTarget.Content = robot.angleToTarget.ToString("F2");
+                    ValDistanceToTarget.Content = robot.distanceToTarget.ToString("F2");
+                    ValAngle.Content = robot.theta.ToString("F2");
+                    ValVitAng.Content = robot.angularSpeed.ToString("F2");
+                    ValXPos.Content = robot.positionXOdo.ToString("F5");
+                    ValYPos.Content = robot.positionYOdo.ToString("F5");
+                    ValVitLin.Content = robot.linearSpeed.ToString("F2");
+                    break;
                 default:
                     break;
             }
-        }
-
-        //private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    string messageStr = "Bonjour";
-        //    byte[] msgPayload = Encoding.ASCII.GetBytes(messageStr);
-        //    int msgPayloadLength = msgPayload.Length;
-        //    int msgFunction = 0x0080;
-        //    UartEncodeAndSendMessage(msgFunction, msgPayloadLength, msgPayload);
-        //}
-
-        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CheckBox_Checked_2(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CheckBox_Checked_3(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Mot_KeyUp(object sender, KeyEventArgs e)
@@ -496,11 +485,6 @@ namespace WpfRobotInterface
             BitConverter.GetBytes(limitDTheta).CopyTo(pidThetaPayload, 20);
 
             UartEncodeAndSendMessage(0x0092, pidThetaPayload.Length, pidThetaPayload);
-
-
-
-          
-
         }
         private void buttonClearPid_Click(object sender, RoutedEventArgs e)
         {
@@ -515,6 +499,25 @@ namespace WpfRobotInterface
 
             MessageBox.Show("PID désactivé (valeurs mises à 0)", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        private void SendGhostToTarget_Click(object sender, RoutedEventArgs e)
+        {
+            double Click_x = worldMap.LastClickedX;
+            double Click_y = worldMap.LastClickedY;
+
+            byte[] ghostclickpayload = new byte[16];
+
+            BitConverter.GetBytes(Click_x).CopyTo(ghostclickpayload, 0);
+            BitConverter.GetBytes(Click_y).CopyTo(ghostclickpayload, 8);
+
+            UartEncodeAndSendMessage(0x0095, ghostclickpayload.Length, ghostclickpayload);
+
+            //worldMap.SetGhostTarget(Click_x, Click_y);
+            worldMap.HasNewClick = false;
+        }
+
+
+
 
     }
 }

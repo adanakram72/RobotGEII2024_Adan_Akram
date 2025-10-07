@@ -7,6 +7,7 @@
 #include "robot.h"
 #include "asservissement.h"
 #include "math.h"
+#include "trajectory.h"
 
 // Fonction pour envoyer les valeurs des télémètres via UART
 
@@ -130,6 +131,8 @@ float correcteurKp, correcteurKd, correcteurKi, consigneLineaire, limitPX, limit
 
 float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi, consigneAngulaire, limitPTheta, limitITheta, limitDTheta;
 
+double Click_x, Click_y;
+
 void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* payload) {
     int etatLed;
     switch (function) {
@@ -187,7 +190,12 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
                     (double) limitDTheta);
 
             break;
-
+            
+        case PosClickGhost:
+            Click_x = getDouble(payload, 0);
+            Click_y = getDouble(payload, 8);
+            SetGhostTarget(Click_x, Click_y);
+            break;
         default:
             break;
     }

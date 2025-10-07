@@ -126,6 +126,5 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     tstop = tstop + 1;
     //    OperatingSystemLoop();
     sendPidDonnees();
-
-
+    UpdateTrajectory();
 }

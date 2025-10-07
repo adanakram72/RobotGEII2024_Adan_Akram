@@ -53,6 +53,13 @@ namespace Robot_NS
         public float consigneTheta;
         public float vitesseTheta;
 
+        public uint timestamp;           
+        public float angleToTarget;      
+        public float distanceToTarget;   
+        public float theta;              
+        public float angularSpeed;       
+        public float linearSpeed;       
+
         public Robot()
         {
 

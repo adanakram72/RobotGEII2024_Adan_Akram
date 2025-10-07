@@ -14,5 +14,7 @@
             <s:NumericAxis VisibleRange="0,100"/>
         </s:SciChartSurface.YAxis>
     </s:SciChartSurface>
+    
+    
 
 </UserControl>

@@ -153,10 +153,22 @@
                     <Label Content="YPos :" VerticalAlignment="Center"/>
                     <Label Name="ValYPos" Content="0" VerticalAlignment="Center"/>
                 </StackPanel>
+                
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Angle :" VerticalAlignment="Center"/>
                     <Label Name="ValAngle" Content="0" VerticalAlignment="Center"/>
                 </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Angle target :" VerticalAlignment="Center"/>
+                    <Label Name="ValAngleToTarget" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Distance target:" VerticalAlignment="Center"/>
+                    <Label Name="ValDistanceToTarget" Content="0" VerticalAlignment="Center"/>
+                </StackPanel>
+
                 <StackPanel Orientation="Horizontal">
                     <Label Content="VitAng :" VerticalAlignment="Center"/>
                     <Label Name="ValVitAng" Content="0" VerticalAlignment="Center"/>
@@ -192,6 +204,8 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
+
+        <Button x:Name="buttonSendGhost"  Grid.Row="0" Grid.Column="0" Content="Send Ghost"  Height="30" Margin="20,20,20,-250" Click="SendGhostToTarget_Click"/> 
 
         <AsservDisplay:AsservissementRobot2RouesDisplayControl x:Name="asservSpeedDisplay" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2"/>
 
