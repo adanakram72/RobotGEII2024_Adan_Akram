@@ -25,6 +25,10 @@ namespace WpfRobotInterface
         Robot robot = new Robot();
         ExtendedSerialPort serialPort1;
         DispatcherTimer timerAffichage;
+
+        double _pendingX, _pendingY;
+        bool _hasPendingTarget = false;
+        const double Rad2Deg = 180.0 / Math.PI;
         public MainWindow()
         {
             // Set this code once in App.xaml.cs or application startup
@@ -48,12 +52,14 @@ namespace WpfRobotInterface
             oscilloSpeed.ChangeLineColor(1, Colors.Blue);
             oscilloSpeed.AddOrUpdateLine(2, 200, "Vitesse Angulaire");
             oscilloSpeed.ChangeLineColor(2, Colors.Green);
+
+
         }
 
         private void TimerAffichage_Tick(object? sender, EventArgs e)
         {
             //tableau asservissement affichage
-            worldMap.UpdatePosRobot(robot.positionXOdo * 100 + 50, robot.positionYOdo * 100 + 50, robot.angleRadFOdo * 180.0 / Math.PI);
+            worldMap.UpdatePosRobot(robot.positionXOdo,robot.positionYOdo,robot.angleRadFOdo * 180.0 / Math.PI); 
             asservSpeedDisplay.UpdateIndependantOdometry(robot.positionMD, robot.positionMG);
             asservSpeedDisplay.UpdatePolarOdometry(robot.vitesseLinFOdo, robot.vitesseAngFOdo);
             asservSpeedDisplay.UpdatePolarCorrectionGains(robot.KpX, robot.KpTheta, robot.KiX, robot.KiTheta, robot.KdX, robot.KdTheta);
