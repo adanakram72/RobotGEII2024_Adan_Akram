@@ -137,10 +137,11 @@ namespace WpfWorldMap_NS
 
         public void UpdateGhost(double x, double y, double angleDegrees)
         {
-            _ghost.X1 = x;
-            _ghost.Y1 = y;
-            _ghostRotation.Angle = angleDegrees;
+            ghost_X = x;              
+            ghost_Y = y;              
+            ghost_Angle = angleDegrees;
         }
+
 
         public event EventHandler<Point>? WorldPointSelected;
 
@@ -150,6 +151,9 @@ namespace WpfWorldMap_NS
             var p = e.GetPosition(s);
             double x = s.XAxis.GetDataValue(p.X).ToDouble();
             double y = s.YAxis.GetDataValue(p.Y).ToDouble();
+
+            if (x < 0) x = 0; else if (x > 2) x = 2;
+            if (y < 0) y = 0; else if (y > 3) y = 3;
 
             LastClickedX = x;
             LastClickedY = y;

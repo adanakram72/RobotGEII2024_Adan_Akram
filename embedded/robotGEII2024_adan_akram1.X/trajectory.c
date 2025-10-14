@@ -17,7 +17,7 @@ double maxLinearSpeed   = 1.0;
 double minMaxLinenearSpeed = 0.4;   
 double linearAccel      = 0.5;
 
-TrajectoryState current_state = IDLE;
+TrajectoryState current_state = LASTROTATE;
 
 void HandleIdleState(void);
 void HandleRotatingState(void);
@@ -65,8 +65,7 @@ void UpdateTrajectory(void) {
         case IDLE:
             HandleIdleState();
             break;
-
-        case ROTATING:
+        case ROTATING:     
         case LASTROTATE:     
             HandleRotatingState();
             break;
@@ -83,53 +82,86 @@ void HandleIdleState(void) {
     robotState.consigneVitesseLineaire  = 0.0;
     robotState.consigneVitesseAngulaire = 0.0;
 }
+//
+//// Helpers sûrs (si tu préfères, tu peux les mettre en static inline dans Utilities.h)
+//static double AngleDiffShortest(double target, double current) {
+//    // Retourne l?angle court (target - current) dans [-?, ?]
+//    double d = target - current;
+//    return atan2(sin(d), cos(d));
+//}
 
-void HandleRotatingState(void) {
-    double thetaTarget = atan2(ghostPosition.targetY - ghostPosition.y,
-                               ghostPosition.targetX - ghostPosition.x);
-    double thetaRestant = ModuloByAngle(ghostPosition.theta, thetaTarget) - ghostPosition.theta;
+static inline double AngleDiffShortest(double target, double current) {
+    double d = target - current;
+    return atan2(sin(d), cos(d));
+}
 
-    double thetaArret = ghostPosition.angularSpeed * ghostPosition.angularSpeed / (2.0 * angularAccel);
+void HandleRotatingState(void)
+{
+    // 1) Cible d?angle sûre
+    double dx = ghostPosition.targetX - ghostPosition.x;
+    double dy = ghostPosition.targetY - ghostPosition.y;
+
+    double thetaTarget = (fabs(dx) < 1e-9 && fabs(dy) < 1e-9)
+                         ? ghostPosition.theta        // pas de cible => on ne bouge pas
+                         : atan2(dy, dx);
+
+    double thetaRestant = AngleDiffShortest(thetaTarget, ghostPosition.theta);
+    ghostPosition.angleToTarget = thetaRestant;   
+
+    double thetaArret = (ghostPosition.angularSpeed * ghostPosition.angularSpeed) / (2.0 * angularAccel);
     if (ghostPosition.angularSpeed < 0) thetaArret = -thetaArret;
 
-    double incrementAng = ghostPosition.angularSpeed / FREQ_ECH_QEI;
-
-    if (((thetaArret >= 0 && thetaRestant >= 0) || (thetaArret <= 0 && thetaRestant <= 0)) &&
-        (Abs(thetaRestant) >= Abs(thetaArret))) {
-        if (thetaRestant > 0) {
+    // 4) Mise à jour de la vitesse (rampe trapézoïdale)
+    //    - accélère si |?Restant| > |?Arrêt|
+    //    - sinon freine vers 0
+    if ( ((thetaArret >= 0.0 && thetaRestant >= 0.0) || (thetaArret <= 0.0 && thetaRestant <= 0.0)) &&
+         (fabs(thetaRestant) >= fabs(thetaArret)) )
+    {
+        // Accélération saturée
+        if (thetaRestant > 0.0) {
             ghostPosition.angularSpeed = Min(ghostPosition.angularSpeed + angularAccel / FREQ_ECH_QEI,  maxAngularSpeed);
         } else {
             ghostPosition.angularSpeed = Max(ghostPosition.angularSpeed - angularAccel / FREQ_ECH_QEI, -maxAngularSpeed);
         }
-    } else {
-        if (thetaRestant >= 0 && ghostPosition.angularSpeed > 0) {
-            ghostPosition.angularSpeed = Max(ghostPosition.angularSpeed - angularAccel / FREQ_ECH_QEI, 0);
-        } else if (thetaRestant >= 0 && ghostPosition.angularSpeed < 0) {
-            ghostPosition.angularSpeed = Min(ghostPosition.angularSpeed + angularAccel / FREQ_ECH_QEI, 0);
-        } else if (thetaRestant <= 0 && ghostPosition.angularSpeed > 0) {
-            ghostPosition.angularSpeed = Max(ghostPosition.angularSpeed - angularAccel / FREQ_ECH_QEI, 0);
-        } else if (thetaRestant <= 0 && ghostPosition.angularSpeed < 0) {
-            ghostPosition.angularSpeed = Min(ghostPosition.angularSpeed + angularAccel / FREQ_ECH_QEI, 0);
-        }
-
-        if (Abs(thetaRestant) < Abs(incrementAng)) {
-            incrementAng = thetaRestant;
+    }
+    else
+    {
+        // Freinage saturé vers 0
+        if (ghostPosition.angularSpeed > 0.0) {
+            ghostPosition.angularSpeed = Max(ghostPosition.angularSpeed - angularAccel / FREQ_ECH_QEI, 0.0);
+        } else if (ghostPosition.angularSpeed < 0.0) {
+            ghostPosition.angularSpeed = Min(ghostPosition.angularSpeed + angularAccel / FREQ_ECH_QEI, 0.0);
         }
     }
+
+    double incrementAng = ghostPosition.angularSpeed / FREQ_ECH_QEI;
+    if (fabs(incrementAng) > fabs(thetaRestant)) incrementAng = thetaRestant;
+    ghostPosition.theta += incrementAng;
+
 
     ghostPosition.theta += incrementAng;
     robotState.consigneVitesseAngulaire = ghostPosition.angularSpeed;
 
-    if (ghostPosition.angularSpeed == 0 && Abs(thetaRestant) < 0.01) {
-        ghostPosition.theta = thetaTarget;
-        current_state = ADVANCING;
+    // 6) Snap de fin + passage en IDLE (on ne veut que l?orientation pour l?instant)
+    const double ANG_EPS = 1e-2;   // ~0.57°
+    const double V_EPS   = 1e-3;   // rad/s
+
+    if (fabs(thetaRestant) < ANG_EPS && fabs(ghostPosition.angularSpeed) < V_EPS) {
+        ghostPosition.theta = thetaTarget;          // verrouille exactement l?angle
+        ghostPosition.angularSpeed = 0.0;
+        robotState.consigneVitesseAngulaire = 0.0;
+        current_state = IDLE;                        // pas d?ADVANCING tant qu?on veut juste s?orienter
     }
 }
 
 void HandleAdvancingState(void) {
     double thetaTarget = atan2(ghostPosition.targetY - ghostPosition.y,
                                ghostPosition.targetX - ghostPosition.x);
-    double thetaRestant = ModuloByAngle(ghostPosition.theta, thetaTarget) - ghostPosition.theta;
+    
+
+    double thetaRestant = AngleDiffShortest(thetaTarget, ghostPosition.theta);
+    ghostPosition.angleToTarget = thetaRestant; // télémétrie cohérente
+
 
     double dx = ghostPosition.targetX - ghostPosition.x;
     double dy = ghostPosition.targetY - ghostPosition.y;

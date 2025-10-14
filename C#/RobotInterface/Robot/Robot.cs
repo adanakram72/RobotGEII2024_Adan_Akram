@@ -15,6 +15,9 @@ namespace Robot_NS
         public float distanceTelemetreGauche;
         public float positionXOdo, positionYOdo, vitesseLinFOdo, vitesseAngFOdo, angleRadFOdo, timeFrom, positionMD, positionMG;
 
+        public float ghostX, ghostY, ghostTheta, ghostLinSpeed, ghostAngSpeed, ghostAngleToTarget, ghostDistanceToTarget;
+        public uint ghostTimestamp;
+
 
         public float commandeX;
         public float KpX;

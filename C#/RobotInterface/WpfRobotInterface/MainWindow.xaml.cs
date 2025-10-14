@@ -412,24 +412,20 @@ namespace WpfRobotInterface
                     Buffer.BlockCopy(msgPayload, 8, value, 0, 2);
                     ValueIRExDroit.Content = BitConverter.ToInt16(value, 0);
                     break;
-                case 0x0010:
-                    robot.timestamp = BitConverter.ToUInt32(msgPayload, 0);
-                    robot.angleToTarget = BitConverter.ToSingle(msgPayload, 4);
-                    robot.distanceToTarget = BitConverter.ToSingle(msgPayload, 8);
-                    robot.theta = BitConverter.ToSingle(msgPayload, 12);
-                    robot.angularSpeed = BitConverter.ToSingle(msgPayload, 16);
-                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 20);
-                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 24);
-                    robot.linearSpeed = BitConverter.ToSingle(msgPayload, 28);
 
-                    ValAngleToTarget.Content = robot.angleToTarget.ToString("F2");
-                    ValDistanceToTarget.Content = robot.distanceToTarget.ToString("F2");
-                    ValAngle.Content = robot.theta.ToString("F2");
-                    ValVitAng.Content = robot.angularSpeed.ToString("F2");
-                    ValXPos.Content = robot.positionXOdo.ToString("F5");
-                    ValYPos.Content = robot.positionYOdo.ToString("F5");
-                    ValVitLin.Content = robot.linearSpeed.ToString("F2");
+                case 0x0010:
+                    robot.ghostTimestamp = BitConverter.ToUInt32(msgPayload, 0);
+                    robot.ghostAngleToTarget = BitConverter.ToSingle(msgPayload, 4);
+                    robot.ghostDistanceToTarget = BitConverter.ToSingle(msgPayload, 8);
+                    robot.ghostTheta = BitConverter.ToSingle(msgPayload, 12); 
+                    robot.ghostAngSpeed = BitConverter.ToSingle(msgPayload, 16);
+                    robot.ghostX = BitConverter.ToSingle(msgPayload, 20); 
+                    robot.ghostY = BitConverter.ToSingle(msgPayload, 24); 
+                    robot.ghostLinSpeed = BitConverter.ToSingle(msgPayload, 28);
+
+                    worldMap.UpdateGhost(robot.ghostX, robot.ghostY, robot.ghostTheta * 180.0 / Math.PI);
                     break;
+
                 default:
                     break;
             }
