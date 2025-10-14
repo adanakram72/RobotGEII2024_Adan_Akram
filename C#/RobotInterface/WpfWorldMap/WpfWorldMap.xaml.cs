@@ -112,7 +112,7 @@ namespace WpfWorldMap_NS
             sciChartSurface.Annotations.Add(right);
 
             // --- 5) Timer d’animation
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
             _timer.Tick += MoveRobot;
             _timer.Start(); //sex
         }
