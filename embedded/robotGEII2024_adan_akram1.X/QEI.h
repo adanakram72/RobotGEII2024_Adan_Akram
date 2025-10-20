@@ -8,6 +8,7 @@
 #ifndef QEI_H
 #define	QEI_H
 
+#define COEF_VITESSE 40
 #define DISTROUES 0.217
 #define FREQ_ECH_QEI 250
 

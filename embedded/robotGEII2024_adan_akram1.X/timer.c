@@ -8,6 +8,7 @@
 #include "robot.h"
 #include "asservissement.h"
 #include "UART_Protocol.h"
+#include "trajectory.h"
 
 //Initialisation d?un timer 16 bits
 unsigned long timestamp;
@@ -31,11 +32,15 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     QEIUpdateData();
     robotState.timeFrom++;
     send_counter++;
+    
+    UpdateTrajectory();
+    UpdateAsservissement();
+    
 
     if (send_counter >= 25) {
         send_counter = 0;
         SendPositionData();
-
+        
     }
 }
 
@@ -68,6 +73,7 @@ void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void) {
     //        PWMSetSpeed(-20, MOTEUR_GAUCHE);
     //        toggle = 0;
     //    }
+
 }
 
 void SetFreqTimer1(float freq) {
@@ -126,5 +132,5 @@ void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     tstop = tstop + 1;
     //    OperatingSystemLoop();
     sendPidDonnees();
-    UpdateTrajectory();
+   
 }

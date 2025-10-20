@@ -1,173 +1,163 @@
-#include "robot.h"
-#include "Utilities.h"
-#include "UART_Protocol.h"
 #include <math.h>
-#include "timer.h"
-#include "QEI.h"
 #include "trajectory.h"
+#include "timer.h"
+#include "Robot.h"
+#include "utilities.h"
+#include "UART_Protocol.h"
+#include "QEI.h"
 
-#define Ts      (1.0 / FREQ_ECH_QEI)
+extern unsigned long timestamp;
 
-static const double VTHETA_MAX = 2.0;   
-static const double ATHETA     = 6.0;   
 
-static const double VLIN_MAX   = 1.0;   
-static const double ALIN       = 3.0; 
+double maxAngularSpeed = 1.5;
+double angularAccel = 2.5;
+double maxLinearSpeed = 1;
+double minMaxLinenearSpeed = 0.5;
+double linearAccel = 1;
 
-static const double ANG_EPS    = 1e-2;  
-static const double POS_EPS    = 1e-4;  
+int current_state = IDLE;
+#define MAX_POS 7
 
-static inline double AngleDiffShortest(double target, double current) {
-    double d = target - current;
-    return atan2(sin(d), cos(d));
+struct Waypoint {
+    double x;
+    double y;
+    int last_rotate;
+};
+typedef struct Waypoint Waypoint_t;
+
+Waypoint_t waypoints[MAX_POS] = {{0, 0, 0}, {0, 0.1, 0}, {-0.1, 0.1, 0}, {-0.1, -0.1, 0}, {0, -0.1, 0.0}, {0.0, 0, 0}, {0.05, 0, 0}};
+
+void InitTrajectoryGenerator(void) {
+    ghostposition.x = 0;
+    ghostposition.y = 0;
+    ghostposition.theta = 0;
+    ghostposition.linearSpeed = 0.0f;
+    ghostposition.angularSpeed = -PI;
+    ghostposition.targetX = 0.0f;
+    ghostposition.targetY = 0.0f;
+    ghostposition.angleToTarget = 0.0f;
+    ghostposition.distanceToTarget = 0.0f;
 }
 
-volatile GhostPosition ghostPosition;
-
-void InitTrajectoryGenerator(void)
+void UpdateTrajectory()
 {
-    ghostPosition.x = 0.0;
-    ghostPosition.y = 0.0;
-    ghostPosition.theta = 0.0;
+    double thetaTarget = atan2(ghostposition.targetY - ghostposition.y, ghostposition.targetX - ghostposition.x);
+    double thetaRestant = ModuloByAngle(ghostposition.theta, thetaTarget) - ghostposition.theta;
+    ghostposition.angleToTarget = thetaRestant;
+    double thetaArret = ghostposition.angularSpeed * ghostposition.angularSpeed / (2 * angularAccel);
+    double incrementAng = ghostposition.angularSpeed / FREQ_ECH_QEI;
+    double incremntLin = ghostposition.linearSpeed / FREQ_ECH_QEI;
 
-    ghostPosition.linearSpeed  = 0.0;
-    ghostPosition.angularSpeed = 0.0;
+    double distanceArret = ghostposition.linearSpeed * ghostposition.linearSpeed / (2 * linearAccel);
 
-    ghostPosition.targetX = 0.0;
-    ghostPosition.targetY = 0.0;
+    double distanceRestante = sqrt((ghostposition.targetX - ghostposition.x) * (ghostposition.targetX - ghostposition.x)
+            + (ghostposition.targetY - ghostposition.y) * (ghostposition.targetY - ghostposition.y));
+    ghostposition.distanceToTarget = distanceRestante;
+    int index = 0;
 
-    ghostPosition.angleToTarget    = 0.0;
-    ghostPosition.distanceToTarget = 0.0;
+    if (current_state == IDLE) {
+        if(index < MAX_POS) {
+            Waypoint_t nextWay = waypoints[index++];
+            ghostposition.targetX = nextWay.x;
+            ghostposition.targetY = nextWay.y;
+            if (nextWay.last_rotate) {
+                current_state = LASTROTATE;
+            } else {
+                current_state = ROTATING;
+            }
+        }
 
-    ghostPosition.state = IDLE;
-}
+    } else if (current_state == ROTATING || current_state == LASTROTATE) {
 
-void SetGhostTarget(double Click_x, double Click_y) {
-    ghostPosition.targetX = Click_x;
-    ghostPosition.targetY = Click_y;
+        if (ghostposition.angularSpeed < 0) thetaArret = -thetaArret;
 
-    ghostPosition.angularSpeed = 0.0;
-    ghostPosition.linearSpeed  = 0.0;
+        if (((thetaArret >= 0 && thetaRestant >= 0) || (thetaArret <= 0 && thetaRestant <= 0)) && (Abs(thetaRestant) >= Abs(thetaArret))) {
+            if (thetaRestant > 0) {
+                ghostposition.angularSpeed = Min(ghostposition.angularSpeed + angularAccel / FREQ_ECH_QEI, maxAngularSpeed);
+            } else if (thetaRestant < 0) {
+                ghostposition.angularSpeed = Max(ghostposition.angularSpeed - angularAccel / FREQ_ECH_QEI, -maxAngularSpeed);
+            }
+        } else {
 
-    ghostPosition.state = ADVANCING;
-}
+            if (thetaRestant >= 0 && ghostposition.angularSpeed > 0) {
+                ghostposition.angularSpeed = Max(ghostposition.angularSpeed - angularAccel / FREQ_ECH_QEI, 0);
+            } else if (thetaRestant >= 0 && ghostposition.angularSpeed < 0) {
+                ghostposition.angularSpeed = Min(ghostposition.angularSpeed + angularAccel / FREQ_ECH_QEI, 0);
+            } else if (thetaRestant <= 0 && ghostposition.angularSpeed > 0) {
+                ghostposition.angularSpeed = Max(ghostposition.angularSpeed - angularAccel / FREQ_ECH_QEI, 0);
+            } else if (thetaRestant <= 0 && ghostposition.angularSpeed < 0) {
+                ghostposition.angularSpeed = Min(ghostposition.angularSpeed + angularAccel / FREQ_ECH_QEI, 0);
+            }
 
-static void StepRotating(void)
-{
-    double dx = ghostPosition.targetX - ghostPosition.x;
-    double dy = ghostPosition.targetY - ghostPosition.y;
-   double thetaTarget = atan2(ghostPosition.targetY - ghostPosition.y,
-                           ghostPosition.targetX - ghostPosition.x);
+            if (Abs(thetaRestant) < Abs(incrementAng)) {
+                incrementAng = thetaRestant;
+            }
+        }
 
+        ghostposition.theta += incrementAng;
+        robotState.consigneVitesseAngulaire = ghostposition.angularSpeed;
 
-   double thetaRest = ModuloByAngle(thetaTarget - ghostPosition.theta);
+        if (ghostposition.angularSpeed == 0 && (Abs(thetaRestant) < 0.01)) {
+            ghostposition.theta = thetaTarget;
+            robotState.angleRadianFromOdometry = thetaTarget;
+            robotState.PidTheta.epsilon_1 = 0;
 
-    //double thetaRest = AngleDiffShortest(thetaTarget, ghostPosition.theta);
-    ghostPosition.angleToTarget = thetaRest;
+            if(current_state != LASTROTATE) 
+                current_state = ADVANCING;
+            else
+                current_state = IDLE;
+        }
 
-    double thetaStop = (ghostPosition.angularSpeed * ghostPosition.angularSpeed) / (2.0 * ATHETA);
-    if (ghostPosition.angularSpeed < 0.0) thetaStop = -thetaStop;
+    } else if (current_state == ADVANCING) {
 
-    int sameSign = ((thetaStop >= 0.0 && thetaRest >= 0.0) || (thetaStop <= 0.0 && thetaRest <= 0.0));
-    if (sameSign && (fabs(thetaRest) >= fabs(thetaStop))) {
-        if (thetaRest > 0.0)
-            ghostPosition.angularSpeed = fmin(ghostPosition.angularSpeed + ATHETA*Ts,  VTHETA_MAX);
-        else if (thetaRest < 0.0)
-            ghostPosition.angularSpeed = fmax(ghostPosition.angularSpeed - ATHETA*Ts, -VTHETA_MAX);
-    } else {
-        if (ghostPosition.angularSpeed > 0.0)
-            ghostPosition.angularSpeed = fmax(ghostPosition.angularSpeed - ATHETA*Ts, 0.0);
-        else if (ghostPosition.angularSpeed < 0.0)
-            ghostPosition.angularSpeed = fmin(ghostPosition.angularSpeed + ATHETA*Ts, 0.0);
+        if ((distanceRestante != 0) && (Modulo2PIAngleRadian(thetaRestant) < 0.01)) {
+            if (((distanceArret >= 0 && distanceRestante >= 0) || (distanceArret <= 0 && distanceRestante <= 0)) && Abs(distanceRestante) >= Abs(distanceArret)) {
+                if (distanceRestante > 0) {
+                    ghostposition.linearSpeed = Min(ghostposition.linearSpeed + linearAccel / FREQ_ECH_QEI, maxLinearSpeed);
+                } else if (distanceRestante < 0) {
+                    ghostposition.linearSpeed = Max(ghostposition.linearSpeed - linearAccel / FREQ_ECH_QEI, -maxLinearSpeed);
+                }
+            } else {
+
+                if (distanceRestante >= 0 && ghostposition.linearSpeed > 0) {
+                    ghostposition.linearSpeed = Max(ghostposition.linearSpeed - linearAccel / FREQ_ECH_QEI, 0);
+                } else if (distanceRestante >= 0 && ghostposition.linearSpeed < 0) {
+                    ghostposition.linearSpeed = Min(ghostposition.linearSpeed + linearAccel / FREQ_ECH_QEI, 0);
+                } else if (distanceRestante <= 0 && ghostposition.linearSpeed > 0) {
+                    ghostposition.linearSpeed = Max(ghostposition.linearSpeed - linearAccel / FREQ_ECH_QEI, 0);
+                } else if (distanceRestante <= 0 && ghostposition.linearSpeed < 0) {
+                    ghostposition.linearSpeed = Min(ghostposition.linearSpeed + linearAccel / FREQ_ECH_QEI, 0);
+                }
+
+                if (Abs(distanceRestante) < Abs(incremntLin)) {
+                    incremntLin = distanceRestante;
+                }
+            }
+        }
+
+        if ((Abs(distanceRestante) < 0.0001)) {
+            ghostposition.linearSpeed = 0;
+            ghostposition.x = ghostposition.targetX;
+            ghostposition.y = ghostposition.targetY;
+            current_state = IDLE;
+        }
+        
+        ghostposition.x += incremntLin * cos(ghostposition.theta);
+        ghostposition.y += incremntLin * sin(ghostposition.theta);
+        robotState.consigneVitesseLineaire = ghostposition.linearSpeed;
     }
-
-    double dtheta = ghostPosition.angularSpeed * Ts;
-    if (fabs(dtheta) > fabs(thetaRest)) dtheta = thetaRest;
-    ghostPosition.theta += dtheta;
-
-    if (fabs(thetaRest) < ANG_EPS && fabs(ghostPosition.angularSpeed) < 0.01) {
-        ghostPosition.theta = thetaTarget;
-        ghostPosition.angularSpeed = 0.0;
-        ghostPosition.state = LINEAR;
-    }
-}
-
-static void StepLinear(void)
-{
-    double dx = ghostPosition.targetX - ghostPosition.x;
-    double dy = ghostPosition.targetY - ghostPosition.y;
-    double dist = sqrt(dx*dx + dy*dy);
-    ghostPosition.distanceToTarget = dist;
-
-    double thetaTarget = atan2(dy, dx);
-    double thetaErr = AngleDiffShortest(thetaTarget, ghostPosition.theta);
-    
-    if (ghostPosition.state == LINEAR) {
-        ghostPosition.theta = thetaTarget; 
-    }
-    
-    if (fabs(thetaErr) > ANG_EPS) {
-        if (ghostPosition.linearSpeed > 0.0)
-            ghostPosition.linearSpeed = fmax(ghostPosition.linearSpeed - ALIN*Ts, 0.0);
-        ghostPosition.state = ROTATING;
-        return;
-    }
-
-    double dStop = (ghostPosition.linearSpeed * ghostPosition.linearSpeed) / (2.0 * ALIN);
-
-    if (dist >= dStop) {
-        ghostPosition.linearSpeed = fmin(ghostPosition.linearSpeed + ALIN*Ts, VLIN_MAX);
-    } else {
-        ghostPosition.linearSpeed = fmax(ghostPosition.linearSpeed - ALIN*Ts, 0.0);
-    }
-
-    double step = ghostPosition.linearSpeed * Ts;
-    double stepX = step * cos(ghostPosition.theta);
-    double stepY = step * sin(ghostPosition.theta);
-    if (hypot(stepX, stepY) > dist) { stepX = dx; stepY = dy; }
-
-    ghostPosition.x += stepX;
-    ghostPosition.y += stepY;
-
-    if (dist < POS_EPS) {
-        ghostPosition.linearSpeed = 0.0;
-        ghostPosition.x = ghostPosition.targetX;
-        ghostPosition.y = ghostPosition.targetY;
-        ghostPosition.state = IDLE;
-    }
-}
-
-void UpdateTrajectory(void)
-{
-    switch (ghostPosition.state) {
-        case IDLE:
-            ghostPosition.angularSpeed = 0.0;
-            ghostPosition.linearSpeed  = 0.0;
-            ghostPosition.angleToTarget    = 0.0;
-            ghostPosition.distanceToTarget = hypot(ghostPosition.targetX - ghostPosition.x, ghostPosition.targetY - ghostPosition.y);
-            break;
-
-        case ROTATING:
-            StepRotating();
-            break;
-
-        case LINEAR:
-            StepLinear();
-            break;
-    }
-
     SendGhostData();
 }
 
-void SendGhostData(void) {
+void SendGhostData() {
     unsigned char ghostPayload[32];
     getBytesFromInt32(ghostPayload, 0, timestamp);
-    getBytesFromFloat(ghostPayload, 4,  (double) ghostPosition.angleToTarget);
-    getBytesFromFloat(ghostPayload, 8,  (double) ghostPosition.distanceToTarget);
-    getBytesFromFloat(ghostPayload, 12, (double) ghostPosition.theta);
-    getBytesFromFloat(ghostPayload, 16, (double) ghostPosition.angularSpeed);
-    getBytesFromFloat(ghostPayload, 20, (double) ghostPosition.x);
-    getBytesFromFloat(ghostPayload, 24, (double) ghostPosition.y);
-    getBytesFromFloat(ghostPayload, 28, (double) ghostPosition.linearSpeed);
+    getBytesFromFloat(ghostPayload, 4, (float) ghostposition.angleToTarget);
+    getBytesFromFloat(ghostPayload, 8, (float) ghostposition.distanceToTarget);
+    getBytesFromFloat(ghostPayload, 12, (float) ghostposition.theta);
+    getBytesFromFloat(ghostPayload, 16, (float) ghostposition.angularSpeed);
+    getBytesFromFloat(ghostPayload, 20, (float) ghostposition.x);
+    getBytesFromFloat(ghostPayload, 24, (float) ghostposition.y);
+    getBytesFromFloat(ghostPayload, 28, (float) ghostposition.linearSpeed);
     UartEncodeAndSendMessage(GHOST_DATA, 32, ghostPayload);
 }

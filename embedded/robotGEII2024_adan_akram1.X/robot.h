@@ -42,6 +42,8 @@ typedef struct robotStateBITS {
             
             PidCorrector PidX ;
             PidCorrector PidTheta ;
+            PidCorrector PdTheta;
+            PidCorrector PdLin;
         };
        
     };

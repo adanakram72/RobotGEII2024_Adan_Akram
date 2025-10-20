@@ -8,6 +8,7 @@
 #include "robot.h"
 #include <xc.h>
 #include "PWM.h"
+#include "trajectory.h"
 
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
     PidCorr->Kp = Kp;
@@ -38,12 +39,23 @@ double Correcteur(volatile PidCorrector* PidCorr, double erreur) {
 }
 
 void UpdateAsservissement() {
+
     robotState.PidX.erreur = robotState.consigneVitesseLineaire - robotState.vitesseLineaireFromOdometry;
     robotState.PidTheta.erreur = robotState.consigneVitesseAngulaire - robotState.vitesseAngulaireFromOdometry;
     robotState.xCorrectionVitesse = Correcteur(&robotState.PidX, robotState.PidX.erreur);
     robotState.thetaCorrectionVitesse = Correcteur(&robotState.PidTheta, robotState.PidTheta.erreur);
-    PWMSetSpeedConsignePolaire(robotState.xCorrectionVitesse, robotState.thetaCorrectionVitesse);
 
+    robotState.PdTheta.erreur = ghostposition.theta - robotState.angleRadianFromOdometry;
+    // robotState.correctionVitesseAngulaire += Correcteur(&robotState.PdTheta, robotState.PdTheta.erreur);
+
+    double normeGhost = sqrt(ghostposition.x * ghostposition.x + ghostposition.y * ghostposition.y);
+    double normeOdo = sqrt(robotState.xPosFromOdometry * robotState.xPosFromOdometry + robotState.yPosFromOdometry * robotState.yPosFromOdometry);
+
+    robotState.PdLin.erreur = normeGhost - normeOdo;
+    //robotState.correctionVitesseLineaire += Correcteur(&robotState.PdLin, robotState.PdLin.erreur);
+
+    robotState.vitesseDroiteConsigne = -COEF_VITESSE * (robotState.xCorrectionVitesse + (robotState.thetaCorrectionVitesse * DISTROUES / 2));
+    robotState.vitesseGaucheConsigne = COEF_VITESSE * (robotState.xCorrectionVitesse - (robotState.thetaCorrectionVitesse * DISTROUES / 2));
 }
 
 void sendPidDonnees() {
@@ -85,3 +97,4 @@ float LimitToIntervalBis(float value, float lowLimit, float highLimit) {
         value = lowLimit;
     return value;
 }
+

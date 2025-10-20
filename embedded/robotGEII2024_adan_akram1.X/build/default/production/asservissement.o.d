@@ -1,6 +1,6 @@
 build/default/production/asservissement.o: asservissement.c \
  asservissement.h QEI.h timer.h IO.h UART_Protocol.h robot.h UART.h \
- Utilities.h PWM.h
+ Utilities.h PWM.h trajectory.h
 
 asservissement.h:
 
@@ -19,3 +19,5 @@ UART.h:
 Utilities.h:
 
 PWM.h:
+
+trajectory.h:

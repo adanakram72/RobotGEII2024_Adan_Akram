@@ -1,16 +1,18 @@
-build/default/production/trajectory.o: trajectory.c robot.h \
- asservissement.h Utilities.h UART_Protocol.h timer.h QEI.h trajectory.h
+build/default/production/trajectory.o: trajectory.c trajectory.h timer.h \
+ Robot.h asservissement.h utilities.h UART_Protocol.h robot.h QEI.h
 
-robot.h:
-
-asservissement.h:
-
-Utilities.h:
-
-UART_Protocol.h:
+trajectory.h:
 
 timer.h:
 
-QEI.h:
+Robot.h:
 
-trajectory.h:
+asservissement.h:
+
+utilities.h:
+
+UART_Protocol.h:
+
+robot.h:
+
+QEI.h:

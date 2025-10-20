@@ -35,7 +35,7 @@ void UpdateAsservissement();
 double Correcteur(volatile PidCorrector* PidCorr, double erreur);
 void sendPidDonnees();
 float LimitToIntervalBis(float value, float lowLimit, float highLimit);
-
+void SendGhostData(void);
 
 
 #endif	/* ASSERVISSEMENT_H */

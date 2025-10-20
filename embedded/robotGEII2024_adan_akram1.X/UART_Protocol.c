@@ -9,7 +9,6 @@
 #include "math.h"
 #include "trajectory.h"
 
-// Fonction pour envoyer les valeurs des télémètres via UART
 
 void EnvoieDistanceTelemetre() {
     unsigned char payload[10];
@@ -191,11 +190,11 @@ void UartProcessDecodedMessage(int function, int payloadLength, unsigned char* p
 
             break;
             
-        case PosClickGhost:
+/*        case PosClickGhost:
             Click_x = getDouble(payload, 0);
             Click_y = getDouble(payload, 8);
             SetGhostTarget(Click_x, Click_y);
-            break;
+            break;*/
         default:
             break;
     }

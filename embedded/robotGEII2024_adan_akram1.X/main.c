@@ -23,12 +23,14 @@
 #include "QEI.h"
 #include <libpic30.h>
 #include "asservissement.h"
+#include "trajectory.h"
 
 unsigned char stateRobot;
 unsigned int tstart = 0;
 float Vitesse;
 float boundaryTelemetre = 100;
 unsigned char payload;
+volatile GhostPosition ghostposition;
 
 void updateSensorValues() {
     if (ADCIsConversionFinished() == 1) {
@@ -60,10 +62,19 @@ int main(void) {
     InitUART();
     InitQEI1();
     InitQEI2();
-
-
-
-    // BOUCLE PRINCIPALE
+    InitTrajectoryGenerator();
+    
+    robotState.angleRadianFromOdometry = ghostposition.theta;
+    robotState.xPosFromOdometry = ghostposition.x;
+    robotState.yPosFromOdometry = ghostposition.y;
+    
+    
+    SetupPidAsservissement(&robotState.PidX,2.0f,30.0f,0.0f,100.0f,100.0f,100.0f);
+    SetupPidAsservissement(&robotState.PidTheta,2.0f,30.0f,0.0f,100.0f,100.0f,100.0f);
+    SetupPidAsservissement(&robotState.PdTheta, 0.625f,  0.0f, 0.5f, 100.0f, 100.0f, 100.0f);
+    SetupPidAsservissement(&robotState.PdLin, 0.0f,  0.0f, 0.5f, 100.0f, 100.0f, 100.0f);
+    
+            
     while (1) {
         if (CB_RX1_IsDataAvailable()) {
             unsigned char data = CB_RX1_Get();
