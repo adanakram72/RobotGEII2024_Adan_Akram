@@ -1,20 +1,19 @@
-
 #ifndef TRAJECTORY_H
 #define	TRAJECTORY_H
 
-
 #define GHOST_DATA 0x0010
 
-// Parametres de trajectoire
-#define MAX_LINEAR_SPEED 1 // m/s
-#define MAX_LINEAR_ACCEL 0.2 // m/s^2
+#define MAX_LINEAR_SPEED 1 
+#define MAX_LINEAR_ACCEL 0.2 
 
-#define MAX_ANGULAR_SPEED 2 * PI // rad/s
-#define MAX_ANGULAR_ACCEL 2 * PI // rad/s^2
+#define MAX_ANGULAR_SPEED (2.0 * M_PI)
+#define MAX_ANGULAR_ACCEL (2.0 * M_PI)
 
-#define ANGLE_TOLERANCE 0.05 // radians
-#define DISTANCE_TOLERANCE 0.1 // metres
+#define ANGLE_TOLERANCE 0.05 
+#define DISTANCE_TOLERANCE 0.1
 
+
+// Etat de controle de la trajectoire
 typedef enum {
     IDLE,
     ROTATING,
@@ -22,6 +21,7 @@ typedef enum {
     LASTROTATE
 } TrajectoryState;
 
+// Position et vitesse du Ghost
 typedef struct {
     TrajectoryState state;
     double x;
@@ -32,16 +32,18 @@ typedef struct {
     double targetX;
     double targetY;
     double angleToTarget;
-    double distanceToTarget;   
+    double distanceToTarget; 
+    double red_target_x ;
+    double red_target_y ;
 } GhostPosition;
 
 
-extern volatile GhostPosition ghostposition;
+extern volatile GhostPosition ghostPosition;
 
 void UpdateTrajectory();
 void SendGhostData();
 void InitTrajectoryGenerator(void);
-void rotationTarget(double currentTime);
+//void rotationTarget(double currentTime);
 
-#endif	
+#endif	/* TRAJECTORY_H */
 

@@ -9,6 +9,7 @@
 #include <xc.h>
 #include "PWM.h"
 #include "trajectory.h"
+#include "math.h"
 
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
     PidCorr->Kp = Kp;
@@ -45,17 +46,16 @@ void UpdateAsservissement() {
     robotState.xCorrectionVitesse = Correcteur(&robotState.PidX, robotState.PidX.erreur);
     robotState.thetaCorrectionVitesse = Correcteur(&robotState.PidTheta, robotState.PidTheta.erreur);
 
-    robotState.PdTheta.erreur = ghostposition.theta - robotState.angleRadianFromOdometry;
-    // robotState.correctionVitesseAngulaire += Correcteur(&robotState.PdTheta, robotState.PdTheta.erreur);
-
-    double normeGhost = sqrt(ghostposition.x * ghostposition.x + ghostposition.y * ghostposition.y);
-    double normeOdo = sqrt(robotState.xPosFromOdometry * robotState.xPosFromOdometry + robotState.yPosFromOdometry * robotState.yPosFromOdometry);
-
-    robotState.PdLin.erreur = normeGhost - normeOdo;
+    PWMSetSpeedConsignePolaire(robotState.xCorrectionVitesse, robotState.thetaCorrectionVitesse);
+    
+    //robotState.PdTheta.erreur = ghostPosition.theta - robotState.angleRadianFromOdometry;
+    //robotState.correctionVitesseAngulaire += Correcteur(&robotState.PdTheta, robotState.PdTheta.erreur);
+    
+    //robotState.PdLin.erreur = normeGhost - normeOdo;
     //robotState.correctionVitesseLineaire += Correcteur(&robotState.PdLin, robotState.PdLin.erreur);
 
-    robotState.vitesseDroiteConsigne = -COEF_VITESSE * (robotState.xCorrectionVitesse + (robotState.thetaCorrectionVitesse * DISTROUES / 2));
-    robotState.vitesseGaucheConsigne = COEF_VITESSE * (robotState.xCorrectionVitesse - (robotState.thetaCorrectionVitesse * DISTROUES / 2));
+    //robotState.vitesseDroiteConsigne = -COEF_VITESSE * (robotState.xCorrectionVitesse + (robotState.thetaCorrectionVitesse * DISTROUES / 2));
+    //robotState.vitesseGaucheConsigne = COEF_VITESSE * (robotState.xCorrectionVitesse - (robotState.thetaCorrectionVitesse * DISTROUES / 2));
 }
 
 void sendPidDonnees() {

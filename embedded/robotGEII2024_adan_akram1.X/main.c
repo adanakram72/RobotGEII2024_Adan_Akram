@@ -30,7 +30,6 @@ unsigned int tstart = 0;
 float Vitesse;
 float boundaryTelemetre = 100;
 unsigned char payload;
-volatile GhostPosition ghostposition;
 
 void updateSensorValues() {
     if (ADCIsConversionFinished() == 1) {
@@ -62,17 +61,15 @@ int main(void) {
     InitUART();
     InitQEI1();
     InitQEI2();
+    
+    //robotState.angleRadianFromOdometry = ghostPosition.theta;
+    //robotState.xPosFromOdometry = ghostPosition.x;
+    //robotState.yPosFromOdometry = ghostPosition.y;
+    
     InitTrajectoryGenerator();
-    
-    robotState.angleRadianFromOdometry = ghostposition.theta;
-    robotState.xPosFromOdometry = ghostposition.x;
-    robotState.yPosFromOdometry = ghostposition.y;
-    
-    
-    SetupPidAsservissement(&robotState.PidX,2.0f,30.0f,0.0f,100.0f,100.0f,100.0f);
-    SetupPidAsservissement(&robotState.PidTheta,2.0f,30.0f,0.0f,100.0f,100.0f,100.0f);
-    SetupPidAsservissement(&robotState.PdTheta, 0.625f,  0.0f, 0.5f, 100.0f, 100.0f, 100.0f);
-    SetupPidAsservissement(&robotState.PdLin, 0.0f,  0.0f, 0.5f, 100.0f, 100.0f, 100.0f);
+
+    SetupPidAsservissement(&robotState.PidX, 2.9f, 39.0f, 0.0f,100.0f, 100.0f, 100.0f);
+    SetupPidAsservissement(&robotState.PidTheta, 3.1f, 42.0f, 0.0f,100.0f, 100.0f, 100.0f);
     
             
     while (1) {

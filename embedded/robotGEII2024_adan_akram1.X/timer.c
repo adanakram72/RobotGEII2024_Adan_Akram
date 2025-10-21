@@ -28,20 +28,20 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
 
     IFS0bits.T1IF = 0;
     ADC1StartConversionSequence();
-    PWMUpdateSpeed();
+    
     QEIUpdateData();
     robotState.timeFrom++;
     send_counter++;
     
+    PWMUpdateSpeed();
     UpdateTrajectory();
     UpdateAsservissement();
     
-
     if (send_counter >= 25) {
         send_counter = 0;
-        SendPositionData();
-        
+        SendPositionData(); 
     }
+    
 }
 
 void InitTimer23(void) {
